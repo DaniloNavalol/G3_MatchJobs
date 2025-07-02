@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Você pode remover todo o CSS existente neste arquivo
+   OU manter, mas as diretivas @tailwind devem vir primeiro.
+   O CSS embutido no componente App.jsx/App.js ainda será aplicado. */

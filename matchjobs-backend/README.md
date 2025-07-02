@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MatchJobs
 
 ## 📌 Descrição do Projeto
@@ -54,3 +55,7 @@ Todo o material está sob a **Licença MIT**, podendo ser utilizado para fins ac
 
 Para mais informações, acesse: [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
 
+=======
+# PDS
+Projeto de Desenvolvimento de Software
+>>>>>>> ad37150 (Saulo Santos_API_REACT e FRONT para IA)
