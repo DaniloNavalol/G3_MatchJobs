@@ -223,7 +223,15 @@ export default function CompanyDashboard() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-3">
-                <Building className="w-5 h-5 text-gray-500" />
+                {companyData.logo ? (
+                  <img
+                    src={companyData.logo}
+                    alt={companyData.name}
+                    className="w-12 h-12 rounded-lg object-cover border"
+                  />
+                ) : (
+                  <Building className="w-5 h-5 text-gray-500" />
+                )}
                 <div>
                   <p className="font-semibold">{companyData.name}</p>
                   <p className="text-sm text-gray-600">

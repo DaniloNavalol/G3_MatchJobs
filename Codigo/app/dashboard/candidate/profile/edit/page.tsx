@@ -122,6 +122,7 @@ export default function CandidateProfileEdit() {
   });
   const [knowledgeSkills, setKnowledgeSkills] = useState<string[]>([]);
   const [newKnowledge, setNewKnowledge] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const tabs = ["info", "experience", "education", "skills"];
   const currentTabIndex = tabs.indexOf(currentTab);
@@ -150,6 +151,105 @@ export default function CandidateProfileEdit() {
     value: string,
   ) => {
     setPersonalData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const compressImage = (
+    file: File,
+    maxWidth: number = 300,
+    quality: number = 0.8,
+  ): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new window.Image();
+
+      img.onload = () => {
+        // Calculate new dimensions
+        let { width, height } = img;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxWidth) {
+            width = (width * maxWidth) / height;
+            height = maxWidth;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw and compress
+        ctx?.drawImage(img, 0, 0, width, height);
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+
+        // Check if compressed size is reasonable (less than 500KB when base64 encoded)
+        if (compressedDataUrl.length > 500 * 1024) {
+          // Try with lower quality
+          const lowerQualityDataUrl = canvas.toDataURL("image/jpeg", 0.5);
+          resolve(lowerQualityDataUrl);
+        } else {
+          resolve(compressedDataUrl);
+        }
+      };
+
+      img.onerror = () => reject(new Error("Failed to load image"));
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleProfileImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // File type validation
+    if (!file.type.startsWith("image/")) {
+      alert(
+        "Por favor, selecione um arquivo de imagem válido (JPG, PNG, etc.)",
+      );
+      return;
+    }
+
+    // File size validation (10MB limit for original file)
+    if (file.size > 10 * 1024 * 1024) {
+      alert("A imagem deve ter no máximo 10MB");
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+
+      // Compress the image
+      const compressedImage = await compressImage(file, 300, 0.8);
+
+      // Final size check for localStorage
+      const estimatedSize = new Blob([compressedImage]).size;
+      if (estimatedSize > 1024 * 1024) {
+        // 1MB limit for compressed
+        alert(
+          "A imagem comprimida ainda é muito grande. Tente uma imagem menor ou de menor resolução.",
+        );
+        return;
+      }
+
+      updatePersonalField("profileImage", compressedImage);
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      alert(
+        "Erro ao processar a imagem. Tente novamente com uma imagem diferente.",
+      );
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const removeProfileImage = () => {
+    updatePersonalField("profileImage", "");
   };
 
   const handleSavePersonalData = () => {
@@ -485,23 +585,50 @@ export default function CandidateProfileEdit() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="text-center">
                   <div className="relative inline-block">
-                    <Image
-                      src="/assets/img/sauro.jpg"
-                      alt="Profile"
-                      width={120}
-                      height={120}
-                      className="rounded-full"
-                    />
-                    <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+                    {uploadingImage ? (
+                      <div className="w-[120px] h-[120px] rounded-full bg-gray-100 flex items-center justify-center">
+                        <div className="flex flex-col items-center">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                          <span className="text-xs text-gray-600 mt-1">
+                            Processando...
+                          </span>
+                        </div>
+                      </div>
+                    ) : personalData.profileImage ? (
+                      <img
+                        src={personalData.profileImage}
+                        alt="Profile"
+                        className="w-[120px] h-[120px] rounded-full object-cover border-2 border-gray-200"
+                      />
+                    ) : (
+                      <div className="w-[120px] h-[120px] rounded-full bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <Camera size={24} className="text-gray-400" />
+                      </div>
+                    )}
+                    <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 cursor-pointer">
                       <Camera size={16} />
-                    </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleProfileImageUpload}
+                        className="hidden"
+                        disabled={uploadingImage}
+                      />
+                    </label>
                   </div>
                   <p className="text-sm text-gray-600 mt-2">
-                    Formatos: JPG, PNG (Máx. 1MB)
+                    Formatos: JPG, PNG (Máx. 10MB)
                   </p>
-                  <Button variant="link" className="text-red-600 text-sm">
-                    Remover foto
-                  </Button>
+                  {personalData.profileImage && (
+                    <Button
+                      variant="link"
+                      className="text-red-600 text-sm"
+                      onClick={removeProfileImage}
+                      disabled={uploadingImage}
+                    >
+                      Remover foto
+                    </Button>
+                  )}
                 </div>
 
                 <div className="md:col-span-3 space-y-4">

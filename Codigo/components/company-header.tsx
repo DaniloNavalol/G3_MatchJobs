@@ -29,29 +29,92 @@ export default function CompanyHeader() {
   const [company, setCompany] = useState<any>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     loadUserData();
   }, []);
 
+  // Listen for localStorage changes to update company data in real-time
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "companies_data" && user && user.userType === "company") {
+        const companyData = getCompanyData(user.cpfOrCnpj);
+        console.log("Storage changed, updating company data:", companyData);
+        setCompany(companyData);
+      }
+    };
+
+    const handleFocus = () => {
+      if (user && user.userType === "company") {
+        const companyData = getCompanyData(user.cpfOrCnpj);
+        setCompany(companyData);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("focus", handleFocus);
+
+    // Also check periodically for updates (in case storage event doesn't fire)
+    const interval = setInterval(() => {
+      if (user && user.userType === "company") {
+        const companyData = getCompanyData(user.cpfOrCnpj);
+        // More detailed comparison to catch logo changes
+        if (
+          companyData &&
+          (!company || companyData.updatedAt !== company.updatedAt)
+        ) {
+          console.log(
+            "Periodic check: updating company data with logo:",
+            companyData.logo ? "YES" : "NO",
+          );
+          setCompany(companyData);
+        }
+      }
+    }, 5000); // Reduced frequency to 5 seconds
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("focus", handleFocus);
+      clearInterval(interval);
+    };
+  }, [user?.id, mounted]); // Only depend on user ID and mounted state
+
   const loadUserData = () => {
-    const currentUser = getCurrentUser();
-    if (!currentUser) {
-      router.push("/auth/login");
-      return;
+    try {
+      const currentUser = getCurrentUser();
+      if (!currentUser) {
+        // Use replace instead of push and wrap in setTimeout to avoid navigation conflicts
+        setTimeout(() => {
+          if (mounted) {
+            router.replace("/auth/login");
+          }
+        }, 100);
+        return;
+      }
+
+      setUser(currentUser);
+
+      if (currentUser.userType === "company") {
+        const companyData = getCompanyData(currentUser.cpfOrCnpj);
+        console.log("Loading company data:", companyData);
+        setCompany(companyData);
+      }
+
+      // Load notifications
+      const userNotifications = getNotificationsByUserId(currentUser.id);
+      setNotifications(userNotifications);
+      setUnreadCount(getUnreadNotificationsCount(currentUser.id));
+    } catch (error) {
+      console.error("Error loading user data:", error);
+      // Fallback redirect on error
+      setTimeout(() => {
+        if (mounted) {
+          router.replace("/auth/login");
+        }
+      }, 100);
     }
-
-    setUser(currentUser);
-
-    if (currentUser.userType === "company") {
-      const companyData = getCompanyData(currentUser.cpfOrCnpj);
-      setCompany(companyData);
-    }
-
-    // Load notifications
-    const userNotifications = getNotificationsByUserId(currentUser.id);
-    setNotifications(userNotifications);
-    setUnreadCount(getUnreadNotificationsCount(currentUser.id));
   };
 
   const handleLogout = () => {
@@ -85,6 +148,13 @@ export default function CompanyHeader() {
 
   const displayName = company?.name || user.fullName || "Empresa";
   const displayEmail = company?.email || user.email;
+
+  // Debug logging
+  console.log(
+    "Company header render - company logo:",
+    company?.logo ? "EXISTS" : "MISSING",
+    company?.logo?.substring(0, 50),
+  );
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
@@ -177,9 +247,21 @@ export default function CompanyHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <User className="w-4 h-4" />
-              </div>
+              {company?.logo && company.logo.trim() !== "" ? (
+                <img
+                  src={company.logo}
+                  alt={displayName}
+                  className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                  onError={(e) => {
+                    console.log("Failed to load company logo");
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              ) : (
+                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4" />
+                </div>
+              )}
               <div className="text-left">
                 <p className="text-sm text-gray-600">Olá,</p>
                 <p className="text-sm font-semibold">{displayName}</p>
@@ -189,12 +271,24 @@ export default function CompanyHeader() {
           <DropdownMenuContent align="end">
             <div className="p-3 border-b">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5" />
-                </div>
+                {company?.logo && company.logo.trim() !== "" ? (
+                  <img
+                    src={company.logo}
+                    alt={displayName}
+                    className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                    onError={(e) => {
+                      console.log("Failed to load company logo in dropdown");
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5" />
+                  </div>
+                )}
                 <div>
-                  <h4 className="font-semibold">Acme RH</h4>
-                  <p className="text-sm text-gray-600">rh@acme.com.br</p>
+                  <h4 className="font-semibold">{displayName}</h4>
+                  <p className="text-sm text-gray-600">{displayEmail}</p>
                   <Link
                     href="/dashboard/company"
                     className="text-xs text-blue-600 hover:underline"
@@ -205,10 +299,8 @@ export default function CompanyHeader() {
               </div>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/" className="w-full">
-                Logout
-              </Link>
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

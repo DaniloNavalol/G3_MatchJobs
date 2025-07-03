@@ -21,7 +21,11 @@ import {
   validateCPF,
   validateCNPJ,
   clearAllStorage,
+  updateCandidatePersonalData,
+  saveCompanyData,
   type User as UserType,
+  type CandidatePersonalData,
+  type CompanyData,
 } from "@/lib/storage";
 
 export default function RegisterPage() {
@@ -38,8 +42,6 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
     cpfOrCnpj: "",
-    phone: "",
-    city: "",
     companySize: "",
   });
 
@@ -98,6 +100,51 @@ export default function RegisterPage() {
 
       // Set current user session
       setCurrentUser(newUser);
+
+      // Save profile data based on user type
+      if (userType === "candidate") {
+        const candidateData: CandidatePersonalData = {
+          cpf: cleanDoc,
+          fullName: formData.fullName,
+          email: formData.email,
+          birthDate: "",
+          gender: "",
+          phone: "",
+          address: "",
+          city: "",
+          state: "",
+          cep: "",
+          about: "",
+        };
+        const candidateSuccess = updateCandidatePersonalData(
+          cleanDoc,
+          candidateData,
+        );
+        if (!candidateSuccess) {
+          console.error("Failed to create candidate profile");
+        } else {
+          console.log("Candidate profile created successfully");
+        }
+      } else if (userType === "company") {
+        const companyData: CompanyData = {
+          cnpj: cleanDoc,
+          name: formData.fullName,
+          email: formData.email,
+          address: "",
+          city: "",
+          state: "",
+          cep: "",
+          foundedYear: "",
+          employeeCount: formData.companySize || "",
+          about: "",
+          phone: "",
+          website: "",
+          industry: "",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        saveCompanyData(companyData);
+      }
 
       // Redirect to appropriate dashboard
       const dashboardUrl = getUserDashboardUrl(userType);
@@ -297,36 +344,6 @@ export default function RegisterPage() {
                     className="mt-1"
                   />
                 </div>
-
-                <div>
-                  <Label htmlFor="phone">Telefone</Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                    placeholder="(11) 99999-9999"
-                    className="mt-1"
-                  />
-                </div>
-
-                {userType === "candidate" && (
-                  <div>
-                    <Label htmlFor="city">Cidade</Label>
-                    <Input
-                      id="city"
-                      name="city"
-                      type="text"
-                      value={formData.city}
-                      onChange={handleChange}
-                      required
-                      placeholder="São Paulo, SP"
-                      className="mt-1"
-                    />
-                  </div>
-                )}
 
                 {userType === "company" && (
                   <div>

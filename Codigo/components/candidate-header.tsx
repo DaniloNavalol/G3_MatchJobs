@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Bell, Mail, User, LogOut } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   getCurrentUser,
@@ -21,34 +21,92 @@ export default function CandidateHeader() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const [user, setUser] = useState<any>(null);
   const [candidate, setCandidate] = useState<any>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const userRef = useRef<any>(null);
+  const candidateRef = useRef<any>(null);
 
   useEffect(() => {
+    setMounted(true);
     loadUserData();
   }, []);
 
+  useEffect(() => {
+    // Listen for storage changes to update profile image
+    const handleStorageChange = (e: StorageEvent) => {
+      if (
+        e.key === "candidates_data" &&
+        userRef.current &&
+        userRef.current.userType === "candidate"
+      ) {
+        const candidateData = getCandidateData(userRef.current.cpfOrCnpj);
+        // Only update if data actually changed
+        if (
+          candidateData &&
+          (!candidateRef.current ||
+            candidateData.updatedAt !== candidateRef.current.updatedAt)
+        ) {
+          setCandidate(candidateData);
+          candidateRef.current = candidateData;
+        }
+      }
+    };
+
+    const handleUserDataChange = () => {
+      loadUserData();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("userDataChanged" as any, handleUserDataChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener(
+        "userDataChanged" as any,
+        handleUserDataChange,
+      );
+    };
+  }, []); // No dependencies - only run once and rely on event listeners
+
   const loadUserData = () => {
-    const currentUser = getCurrentUser();
-    if (!currentUser) {
-      router.push("/auth/login");
-      return;
+    try {
+      const currentUser = getCurrentUser();
+      if (!currentUser) {
+        // Use replace instead of push and wrap in setTimeout to avoid navigation conflicts
+        setTimeout(() => {
+          if (mounted) {
+            router.replace("/auth/login");
+          }
+        }, 100);
+        return;
+      }
+
+      setUser(currentUser);
+      userRef.current = currentUser;
+
+      if (currentUser.userType === "candidate") {
+        const candidateData = getCandidateData(currentUser.cpfOrCnpj);
+        setCandidate(candidateData);
+        candidateRef.current = candidateData;
+      }
+
+      // Load notifications
+      const userNotifications = getNotificationsByUserId(currentUser.id);
+      setNotifications(userNotifications);
+      setUnreadCount(getUnreadNotificationsCount(currentUser.id));
+    } catch (error) {
+      console.error("Error loading user data:", error);
+      // Fallback redirect on error
+      setTimeout(() => {
+        if (mounted) {
+          router.replace("/auth/login");
+        }
+      }, 100);
     }
-
-    setUser(currentUser);
-
-    if (currentUser.userType === "candidate") {
-      const candidateData = getCandidateData(currentUser.cpfOrCnpj);
-      setCandidate(candidateData);
-    }
-
-    // Load notifications
-    const userNotifications = getNotificationsByUserId(currentUser.id);
-    setNotifications(userNotifications);
-    setUnreadCount(getUnreadNotificationsCount(currentUser.id));
   };
 
   const handleLogout = () => {
@@ -241,13 +299,17 @@ export default function CandidateHeader() {
               onClick={() => setShowProfile(!showProfile)}
               className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg"
             >
-              <Image
-                src="/assets/img/sauro.jpg"
-                alt="Profile"
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
+              {candidate?.personal?.profileImage ? (
+                <img
+                  src={candidate.personal.profileImage}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                />
+              ) : (
+                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-gray-600" />
+                </div>
+              )}
               <div className="text-left">
                 <p className="text-sm text-gray-600">Olá,</p>
                 <p className="text-sm font-semibold">
@@ -259,13 +321,17 @@ export default function CandidateHeader() {
               <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 <div className="p-4 border-b border-gray-200">
                   <div className="flex items-center space-x-3">
-                    <Image
-                      src="/assets/img/sauro.jpg"
-                      alt="Profile"
-                      width={48}
-                      height={48}
-                      className="rounded-full"
-                    />
+                    {candidate?.personal?.profileImage ? (
+                      <img
+                        src={candidate.personal.profileImage}
+                        alt="Profile"
+                        className="w-12 h-12 rounded-full object-cover border border-gray-200"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+                        <User className="w-8 h-8 text-gray-600" />
+                      </div>
+                    )}
                     <div>
                       <p className="font-semibold">{displayName}</p>
                       <p className="text-sm text-gray-600">{displayEmail}</p>

@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Check, Building } from "lucide-react";
+import { ArrowLeft, Check, Building, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   getCompanyData,
@@ -41,6 +41,7 @@ export default function CompanyProfileEdit() {
     phone: "",
     website: "",
     industry: "",
+    logo: "",
     createdAt: "",
     updatedAt: "",
   });
@@ -60,6 +61,107 @@ export default function CompanyProfileEdit() {
     setCompanyData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const compressImage = (
+    file: File,
+    maxWidth: number = 300,
+    quality: number = 0.8,
+  ): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      img.onload = () => {
+        // Calculate new dimensions
+        let { width, height } = img;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxWidth) {
+            width = (width * maxWidth) / height;
+            height = maxWidth;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw and compress
+        ctx?.drawImage(img, 0, 0, width, height);
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+
+        // Check if compressed size is reasonable (less than 500KB when base64 encoded)
+        if (compressedDataUrl.length > 500 * 1024) {
+          // Try with lower quality
+          const lowerQualityDataUrl = canvas.toDataURL("image/jpeg", 0.5);
+          resolve(lowerQualityDataUrl);
+        } else {
+          resolve(compressedDataUrl);
+        }
+      };
+
+      img.onerror = () => reject(new Error("Failed to load image"));
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleLogoUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // File type validation
+    if (!file.type.startsWith("image/")) {
+      alert(
+        "Por favor, selecione um arquivo de imagem válido (JPG, PNG, etc.)",
+      );
+      return;
+    }
+
+    // File size validation (10MB limit for original file)
+    if (file.size > 10 * 1024 * 1024) {
+      alert("A imagem deve ter no máximo 10MB");
+      return;
+    }
+
+    try {
+      // Show loading state
+      const originalLogo = companyData.logo;
+      updateField("logo", "loading");
+
+      // Compress the image
+      const compressedImage = await compressImage(file, 300, 0.8);
+
+      // Final size check for localStorage
+      const estimatedSize = new Blob([compressedImage]).size;
+      if (estimatedSize > 1024 * 1024) {
+        // 1MB limit for compressed
+        alert(
+          "A imagem comprimida ainda é muito grande. Tente uma imagem menor ou de menor resolução.",
+        );
+        updateField("logo", originalLogo);
+        return;
+      }
+
+      updateField("logo", compressedImage);
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      alert(
+        "Erro ao processar a imagem. Tente novamente com uma imagem diferente.",
+      );
+      updateField("logo", companyData.logo); // Reset to original
+    }
+  };
+
+  const removeLogo = () => {
+    updateField("logo", "");
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -68,15 +170,30 @@ export default function CompanyProfileEdit() {
       return;
     }
 
-    const cleanCNPJ = companyData.cnpj.replace(/\D/g, "");
-    const success = saveCompanyData(companyData);
+    // Check if logo is being loaded
+    if (companyData.logo === "loading") {
+      alert("Aguarde o processamento da imagem finalizar");
+      return;
+    }
 
-    if (success) {
-      setCurrentCompanyCNPJ(cleanCNPJ);
-      alert("Dados da empresa salvos com sucesso!");
-      router.push("/dashboard/company");
-    } else {
-      alert("Erro ao salvar dados da empresa");
+    try {
+      const cleanCNPJ = companyData.cnpj.replace(/\D/g, "");
+      const success = saveCompanyData(companyData);
+
+      if (success) {
+        setCurrentCompanyCNPJ(cleanCNPJ);
+        alert("Dados da empresa salvos com sucesso!");
+        router.push("/dashboard/company");
+      } else {
+        alert("Erro ao salvar dados da empresa");
+      }
+    } catch (error) {
+      console.error("Error saving company:", error);
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("Erro inesperado ao salvar dados da empresa");
+      }
     }
   };
 
@@ -103,6 +220,67 @@ export default function CompanyProfileEdit() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Logo Upload */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Building className="w-5 h-5 mr-2 text-blue-600" />
+              Logo da Empresa
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-6">
+              <div className="flex-shrink-0">
+                {companyData.logo === "loading" ? (
+                  <div className="w-24 h-24 border-2 border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                    <div className="flex flex-col items-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                      <span className="text-xs text-gray-600 mt-1">
+                        Processando...
+                      </span>
+                    </div>
+                  </div>
+                ) : companyData.logo && companyData.logo !== "" ? (
+                  <div className="relative">
+                    <img
+                      src={companyData.logo}
+                      alt="Logo da empresa"
+                      className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeLogo}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                    <Upload className="w-8 h-8 text-gray-400" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1">
+                <Label htmlFor="logo">Carregar Logo</Label>
+                <Input
+                  id="logo"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="mt-1"
+                  disabled={companyData.logo === "loading"}
+                />
+                <div className="text-sm text-gray-500 mt-1">
+                  <p>• Recomendado: imagem quadrada, até 10MB</p>
+                  <p>• A imagem será automaticamente comprimida</p>
+                  <p>• Formatos aceitos: JPG, PNG, GIF, WebP</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Basic Information */}
         <Card>
           <CardHeader>

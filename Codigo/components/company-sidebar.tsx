@@ -1,21 +1,25 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Home, Briefcase, ChevronDown } from "lucide-react"
-import { useState } from "react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Home, Briefcase, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 export default function CompanySidebar() {
-  const pathname = usePathname()
-  const [isDashboardOpen, setIsDashboardOpen] = useState(true)
-  const [isJobsOpen, setIsJobsOpen] = useState(true)
+  const pathname = usePathname();
+  const [isDashboardOpen, setIsDashboardOpen] = useState(true);
+  const [isJobsOpen, setIsJobsOpen] = useState(true);
 
   return (
     <div className="w-64 bg-gray-900 text-white min-h-screen">
       {/* Logo */}
       <div className="p-4 border-b border-gray-700">
         <Link href="/" className="flex items-center">
-          <img src="/assets/img/logo/matchjoblogowhite.png" alt="MatchJobs" className="h-8" />
+          <img
+            src="/assets/img/logo/matchjoblogowhite.png"
+            alt="MatchJobs"
+            className="h-8"
+          />
         </Link>
       </div>
 
@@ -32,7 +36,9 @@ export default function CompanySidebar() {
                 <Home className="w-5 h-5 mr-3" />
                 <span>Dashboard</span>
               </div>
-              <ChevronDown className={`w-4 h-4 transition-transform ${isDashboardOpen ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`w-4 h-4 transition-transform ${isDashboardOpen ? "rotate-180" : ""}`}
+              />
             </button>
             {isDashboardOpen && (
               <ul className="ml-8 mt-2 space-y-1">
@@ -40,10 +46,24 @@ export default function CompanySidebar() {
                   <Link
                     href="/dashboard/company"
                     className={`block px-4 py-2 text-sm hover:bg-gray-800 transition-colors ${
-                      pathname === "/dashboard/company" ? "bg-gray-800 text-blue-400" : ""
+                      pathname === "/dashboard/company"
+                        ? "bg-gray-800 text-blue-400"
+                        : ""
                     }`}
                   >
                     Perfil
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/dashboard/company/profile/edit"
+                    className={`block px-4 py-2 text-sm hover:bg-gray-800 transition-colors ${
+                      pathname === "/dashboard/company/profile/edit"
+                        ? "bg-gray-800 text-blue-400"
+                        : ""
+                    }`}
+                  >
+                    Edição de Perfil
                   </Link>
                 </li>
               </ul>
@@ -60,7 +80,9 @@ export default function CompanySidebar() {
                 <Briefcase className="w-5 h-5 mr-3" />
                 <span>Gerenciar Vagas</span>
               </div>
-              <ChevronDown className={`w-4 h-4 transition-transform ${isJobsOpen ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`w-4 h-4 transition-transform ${isJobsOpen ? "rotate-180" : ""}`}
+              />
             </button>
             {isJobsOpen && (
               <ul className="ml-8 mt-2 space-y-1">
@@ -68,7 +90,9 @@ export default function CompanySidebar() {
                   <Link
                     href="/dashboard/company/jobs/open"
                     className={`block px-4 py-2 text-sm hover:bg-gray-800 transition-colors ${
-                      pathname === "/dashboard/company/jobs/open" ? "bg-gray-800 text-blue-400" : ""
+                      pathname === "/dashboard/company/jobs/open"
+                        ? "bg-gray-800 text-blue-400"
+                        : ""
                     }`}
                   >
                     Vagas Abertas
@@ -78,7 +102,9 @@ export default function CompanySidebar() {
                   <Link
                     href="/dashboard/company/jobs/closed"
                     className={`block px-4 py-2 text-sm hover:bg-gray-800 transition-colors ${
-                      pathname === "/dashboard/company/jobs/closed" ? "bg-gray-800 text-blue-400" : ""
+                      pathname === "/dashboard/company/jobs/closed"
+                        ? "bg-gray-800 text-blue-400"
+                        : ""
                     }`}
                   >
                     Vagas Encerradas
@@ -90,5 +116,5 @@ export default function CompanySidebar() {
         </ul>
       </nav>
     </div>
-  )
+  );
 }

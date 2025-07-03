@@ -117,6 +117,9 @@ export interface BehavioralAnalysis {
       leadership: string;
       problemSolving: string;
       adaptability: string;
+      collaboration: string;
+      proactivity: string;
+      emotionalIntelligence: string;
     };
     suggestions: {
       recommendedPositions: string[];
@@ -142,6 +145,7 @@ export interface CompanyData {
   phone: string;
   website?: string;
   industry: string;
+  logo?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -305,6 +309,10 @@ export const saveCandidateData = (data: CandidateData): boolean => {
     };
 
     localStorage.setItem(CANDIDATES_STORAGE_KEY, JSON.stringify(candidates));
+
+    // Notify components about user data change
+    dispatchUserDataChange();
+
     return true;
   } catch (error) {
     console.error("Error saving candidate data:", error);
@@ -634,6 +642,87 @@ export const calculateProfileCompletion = (data: CandidateData): number => {
   return Math.round((completed / total) * 100);
 };
 
+// Cancel job application
+export const cancelJobApplication = (applicationId: string): boolean => {
+  if (typeof window === "undefined") return false;
+
+  try {
+    const applications = getAllApplications();
+    const application = applications[applicationId];
+    if (!application) {
+      throw new Error("Application not found");
+    }
+
+    // Update application status to withdrawn
+    application.status = "withdrawn";
+    application.updatedAt = new Date().toISOString();
+
+    // Add to stage history
+    application.stageHistory.push({
+      stage: "Cancelado",
+      status: "rejected",
+      date: new Date().toISOString(),
+      notes: "Candidatura cancelada pelo candidato",
+    });
+
+    applications[applicationId] = application;
+    localStorage.setItem(
+      APPLICATIONS_STORAGE_KEY,
+      JSON.stringify(applications),
+    );
+
+    // Notify components about user data change
+    dispatchUserDataChange();
+
+    return true;
+  } catch (error) {
+    console.error("Error canceling application:", error);
+    return false;
+  }
+};
+
+// Reject job application (by company)
+export const rejectJobApplication = (
+  applicationId: string,
+  notes?: string,
+): boolean => {
+  if (typeof window === "undefined") return false;
+
+  try {
+    const applications = getAllApplications();
+    const application = applications[applicationId];
+    if (!application) {
+      throw new Error("Application not found");
+    }
+
+    // Update application status to rejected
+    application.status = "rejected";
+    application.updatedAt = new Date().toISOString();
+
+    // Add to stage history
+    application.stageHistory.push({
+      stage: "Rejeitado",
+      status: "rejected",
+      date: new Date().toISOString(),
+      notes: notes || "Candidatura rejeitada pela empresa",
+    });
+
+    applications[applicationId] = application;
+    localStorage.setItem(
+      APPLICATIONS_STORAGE_KEY,
+      JSON.stringify(applications),
+    );
+
+    // Notify components about user data change
+    dispatchUserDataChange();
+
+    return true;
+  } catch (error) {
+    console.error("Error rejecting application:", error);
+    return false;
+  }
+};
+
 // ========== COMPANY STORAGE FUNCTIONS ==========
 
 // Get all companies
@@ -669,17 +758,85 @@ export const saveCompanyData = (data: CompanyData): boolean => {
     }
 
     const now = new Date().toISOString();
-    companies[cleanCNPJ] = {
+    const updatedCompany = {
       ...data,
       updatedAt: now,
       createdAt: data.createdAt || now,
     };
 
-    localStorage.setItem(COMPANIES_STORAGE_KEY, JSON.stringify(companies));
+    // Check if logo is too large
+    if (updatedCompany.logo) {
+      const logoSize = new Blob([updatedCompany.logo]).size;
+      if (logoSize > 1024 * 1024) {
+        // 1MB limit
+        console.warn("Logo size is too large:", logoSize);
+        // Keep the company data but remove the oversized logo
+        updatedCompany.logo = "";
+        throw new Error(
+          "A imagem é muito grande. Por favor, use uma imagem menor.",
+        );
+      }
+    }
+
+    companies[cleanCNPJ] = updatedCompany;
+
+    // Test the storage size before committing
+    const dataToStore = JSON.stringify(companies);
+    const dataSize = new Blob([dataToStore]).size;
+
+    if (dataSize > 4 * 1024 * 1024) {
+      // 4MB limit (leaving some buffer)
+      throw new Error(
+        "Limite de armazenamento atingido. Tente usar uma imagem menor ou remover dados desnecessários.",
+      );
+    }
+
+    localStorage.setItem(COMPANIES_STORAGE_KEY, dataToStore);
+
+    // Notify components about user data change
+    dispatchUserDataChange();
+
     return true;
   } catch (error) {
     console.error("Error saving company data:", error);
-    return false;
+
+    // Specific error handling for quota exceeded
+    if (error instanceof Error) {
+      if (
+        error.name === "QuotaExceededError" ||
+        error.message.includes("quota")
+      ) {
+        // Try to free up space by cleaning old data
+        console.log("Quota exceeded, attempting to clean up storage...");
+
+        const notificationsCleaned = cleanupOldNotifications();
+        const companiesOptimized = optimizeCompanyStorage();
+
+        if (notificationsCleaned || companiesOptimized) {
+          try {
+            // Try saving again after cleanup
+            localStorage.setItem(COMPANIES_STORAGE_KEY, dataToStore);
+            console.log("Successfully saved after cleanup");
+            return true;
+          } catch (retryError) {
+            console.error("Still failed after cleanup:", retryError);
+          }
+        }
+
+        throw new Error(
+          "Limite de armazenamento atingido. A imagem pode ser muito grande. Tente usar uma imagem menor ou com menor qualidade.",
+        );
+      }
+      // Re-throw our custom errors
+      if (
+        error.message.includes("muito grande") ||
+        error.message.includes("armazenamento")
+      ) {
+        throw error;
+      }
+    }
+
+    throw new Error("Erro ao salvar dados da empresa. Tente novamente.");
   }
 };
 
@@ -890,9 +1047,53 @@ export const createJobApplication = (
     }
 
     const cleanCPF = candidateCpf.replace(/\D/g, "");
+    console.log("Looking for candidate with CPF:", cleanCPF);
+
     const candidate = getCandidateData(cleanCPF);
+    console.log("Found candidate:", candidate);
+
     if (!candidate) {
-      throw new Error("Candidate not found");
+      // Try to create basic candidate data if user exists but candidate data is missing
+      const allUsers = getAllUsers();
+      const user = Object.values(allUsers).find(
+        (u) => u.cpfOrCnpj === cleanCPF && u.userType === "candidate",
+      );
+
+      if (user) {
+        console.log("User found, creating basic candidate data...");
+        // Create basic candidate data
+        const basicCandidateData: CandidatePersonalData = {
+          cpf: cleanCPF,
+          fullName: user.fullName,
+          email: user.email,
+          birthDate: "",
+          gender: "",
+          phone: "",
+          address: "",
+          city: "",
+          state: "",
+          cep: "",
+          about: "",
+        };
+
+        const success = updateCandidatePersonalData(
+          cleanCPF,
+          basicCandidateData,
+        );
+        if (!success) {
+          throw new Error("Failed to create candidate profile");
+        }
+
+        // Try to get candidate data again
+        const newCandidate = getCandidateData(cleanCPF);
+        if (!newCandidate) {
+          throw new Error("Failed to retrieve created candidate profile");
+        }
+      } else {
+        throw new Error(
+          "User account not found. Please make sure you are logged in as a candidate.",
+        );
+      }
     }
 
     // Check if already applied
@@ -1054,7 +1255,7 @@ export const createUser = (
     const newUser: User = {
       id: userId,
       email: email.toLowerCase(),
-      password, // In production, this should be hashed
+      password: password.trim(), // Trim password to avoid whitespace issues
       userType,
       cpfOrCnpj: cleanDoc,
       fullName,
@@ -1063,8 +1264,16 @@ export const createUser = (
       updatedAt: now,
     };
 
+    console.log("Creating new user:", {
+      email: newUser.email,
+      password: newUser.password,
+      userType: newUser.userType,
+    });
+
     users[userId] = newUser;
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+
+    console.log("User created successfully with ID:", userId);
     return userId;
   } catch (error) {
     console.error("Error creating user:", error);
@@ -1078,20 +1287,49 @@ export const authenticateUser = (
   password: string,
 ): User | null => {
   try {
+    console.log("Attempting authentication for email:", email);
+
     const user = getUserByEmail(email);
     if (!user) {
+      console.log("User not found for email:", email);
       throw new Error("Usuário não encontrado");
     }
 
-    // In production, compare hashed passwords
-    if (user.password !== password) {
+    console.log("User found:", {
+      id: user.id,
+      email: user.email,
+      userType: user.userType,
+    });
+    console.log("Password comparison:", {
+      provided: password,
+      stored: user.password,
+      match: user.password === password,
+    });
+
+    // Trim whitespace and compare passwords
+    const trimmedProvidedPassword = password.trim();
+    const trimmedStoredPassword = user.password.trim();
+
+    if (trimmedStoredPassword !== trimmedProvidedPassword) {
+      console.log("Password mismatch after trimming:", {
+        provided: trimmedProvidedPassword,
+        stored: trimmedStoredPassword,
+      });
       throw new Error("Senha incorreta");
     }
 
+    console.log("Authentication successful for user:", user.email);
     return user;
   } catch (error) {
     console.error("Error authenticating user:", error);
     return null;
+  }
+};
+
+// Helper function to dispatch user data change event
+const dispatchUserDataChange = (): void => {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("userDataChanged"));
   }
 };
 
@@ -1106,6 +1344,9 @@ export const setCurrentUser = (user: User): void => {
     } else {
       setCurrentCompanyCNPJ(user.cpfOrCnpj);
     }
+
+    // Notify components about user data change
+    dispatchUserDataChange();
   }
 };
 
@@ -1126,6 +1367,9 @@ export const logout = (): void => {
     localStorage.removeItem(CURRENT_USER_KEY);
     localStorage.removeItem(CURRENT_USER_CPF_KEY);
     localStorage.removeItem(CURRENT_COMPANY_CNPJ_KEY);
+
+    // Notify components about user data change
+    dispatchUserDataChange();
   }
 };
 
@@ -1143,6 +1387,127 @@ export const getUserDashboardUrl = (
     : "/dashboard/company";
 };
 
+// Get localStorage usage information
+export const getStorageInfo = (): {
+  used: number;
+  total: number;
+  percentage: number;
+} => {
+  if (typeof window === "undefined")
+    return { used: 0, total: 0, percentage: 0 };
+
+  let used = 0;
+  for (const key in localStorage) {
+    if (localStorage.hasOwnProperty(key)) {
+      used += localStorage[key].length + key.length;
+    }
+  }
+
+  // Rough estimate of localStorage limit (5MB for most browsers)
+  const total = 5 * 1024 * 1024;
+  const percentage = (used / total) * 100;
+
+  return { used, total, percentage };
+};
+
+// Clean up old notifications to free space
+export const cleanupOldNotifications = (): boolean => {
+  if (typeof window === "undefined") return false;
+
+  try {
+    const notifications = getAllNotifications();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const filteredNotifications: Record<string, Notification> = {};
+    let cleaned = false;
+
+    Object.entries(notifications).forEach(([id, notification]) => {
+      const notifDate = new Date(notification.createdAt);
+      if (notifDate > thirtyDaysAgo) {
+        filteredNotifications[id] = notification;
+      } else {
+        cleaned = true;
+      }
+    });
+
+    if (cleaned) {
+      localStorage.setItem(
+        NOTIFICATIONS_STORAGE_KEY,
+        JSON.stringify(filteredNotifications),
+      );
+    }
+
+    return cleaned;
+  } catch (error) {
+    console.error("Error cleaning notifications:", error);
+    return false;
+  }
+};
+
+// Optimize company data by removing large logos if needed
+export const optimizeCompanyStorage = (): boolean => {
+  if (typeof window === "undefined") return false;
+
+  try {
+    const companies = getAllCompanies();
+    let optimized = false;
+
+    Object.entries(companies).forEach(([cnpj, company]) => {
+      if (company.logo) {
+        const logoSize = new Blob([company.logo]).size;
+        if (logoSize > 500 * 1024) {
+          // Remove logos larger than 500KB
+          company.logo = "";
+          optimized = true;
+        }
+      }
+    });
+
+    if (optimized) {
+      localStorage.setItem(COMPANIES_STORAGE_KEY, JSON.stringify(companies));
+    }
+
+    return optimized;
+  } catch (error) {
+    console.error("Error optimizing company storage:", error);
+    return false;
+  }
+};
+
+// Debug function to list all users
+export const debugListAllUsers = (): void => {
+  if (typeof window !== "undefined") {
+    const users = getAllUsers();
+    console.log("All users in storage:", users);
+    console.log("Number of users:", Object.keys(users).length);
+  }
+};
+
+// Debug function to find user by email (with logging)
+export const debugFindUserByEmail = (email: string): User | null => {
+  console.log("Debug: Searching for user with email:", email);
+  const users = getAllUsers();
+  console.log(
+    "Debug: All users:",
+    Object.values(users).map((u) => ({
+      id: u.id,
+      email: u.email,
+      userType: u.userType,
+    })),
+  );
+
+  const user = Object.values(users).find(
+    (user) => user.email.toLowerCase() === email.toLowerCase(),
+  );
+
+  console.log(
+    "Debug: Found user:",
+    user ? { id: user.id, email: user.email, userType: user.userType } : null,
+  );
+  return user || null;
+};
+
 // Clear all storage data (for testing/debugging)
 export const clearAllStorage = (): void => {
   if (typeof window !== "undefined") {
@@ -1155,6 +1520,7 @@ export const clearAllStorage = (): void => {
     localStorage.removeItem(CURRENT_USER_KEY);
     localStorage.removeItem(CURRENT_USER_CPF_KEY);
     localStorage.removeItem(CURRENT_COMPANY_CNPJ_KEY);
+    console.log("All storage data cleared");
   }
 };
 
@@ -1325,4 +1691,235 @@ export const getRecentApplications = (
         new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime(),
     )
     .slice(0, limit);
+};
+
+// Job compatibility calculation interface
+export interface JobCompatibility {
+  jobId: string;
+  compatibilityScore: number;
+  compatibilityLevel: "Baixa" | "Média" | "Alta";
+  reasons: string[];
+  job: Job;
+  company: CompanyData | null;
+}
+
+// Calculate similarity between two arrays of strings
+const calculateSimilarity = (arr1: string[], arr2: string[]): number => {
+  if (arr1.length === 0 || arr2.length === 0) return 0;
+
+  const set1 = new Set(arr1.map((item) => item.toLowerCase().trim()));
+  const set2 = new Set(arr2.map((item) => item.toLowerCase().trim()));
+
+  const intersection = new Set([...set1].filter((x) => set2.has(x)));
+  const union = new Set([...set1, ...set2]);
+
+  return intersection.size / union.size;
+};
+
+// Extract keywords from text
+const extractKeywords = (text: string): string[] => {
+  if (!text) return [];
+
+  const stopWords = new Set([
+    "o",
+    "a",
+    "de",
+    "do",
+    "da",
+    "em",
+    "um",
+    "uma",
+    "com",
+    "para",
+    "por",
+    "se",
+    "no",
+    "na",
+    "que",
+    "não",
+    "é",
+    "e",
+    "ou",
+    "as",
+    "os",
+    "dos",
+    "das",
+    "ao",
+    "à",
+    "ser",
+    "ter",
+    "estar",
+    "como",
+    "mais",
+    "muito",
+    "bem",
+    "já",
+    "também",
+    "the",
+    "and",
+    "or",
+    "of",
+    "to",
+    "in",
+    "for",
+    "with",
+    "on",
+    "at",
+    "by",
+    "from",
+  ]);
+
+  return text
+    .toLowerCase()
+    .split(/\W+/)
+    .filter((word) => word.length > 2 && !stopWords.has(word))
+    .slice(0, 20); // Limit to top 20 keywords
+};
+
+// Calculate job compatibility for a candidate
+export const calculateJobCompatibility = (
+  candidateData: CandidateData,
+  job: Job,
+  company: CompanyData | null,
+): JobCompatibility => {
+  let totalScore = 0;
+  const reasons: string[] = [];
+
+  // 1. Skills compatibility (40% weight)
+  const candidateSkills = [
+    ...(candidateData.skills.technical || []),
+    ...(candidateData.skills.soft || []),
+  ];
+
+  // Extract skills from job requirements
+  const jobRequirements = `${job.requirements || ""} ${job.description || ""}`;
+  const jobKeywords = extractKeywords(jobRequirements);
+
+  const skillsSimilarity = calculateSimilarity(candidateSkills, jobKeywords);
+  const skillsScore = skillsSimilarity * 40;
+  totalScore += skillsScore;
+
+  if (skillsSimilarity > 0.3) {
+    reasons.push(
+      `${Math.round(skillsSimilarity * 100)}% de compatibilidade em habilidades`,
+    );
+  }
+
+  // 2. Professional area compatibility (25% weight)
+  let areaScore = 0;
+  if (candidateData.experiences.length > 0) {
+    const candidateAreas = candidateData.experiences.map((exp) =>
+      exp.title.toLowerCase(),
+    );
+    const jobTitle = job.title.toLowerCase();
+    const jobArea = job.area.toLowerCase();
+
+    const hasAreaMatch = candidateAreas.some(
+      (area) =>
+        area.includes(jobArea) ||
+        jobArea.includes(area) ||
+        area.includes(jobTitle) ||
+        jobTitle.includes(area),
+    );
+
+    if (hasAreaMatch) {
+      areaScore = 25;
+      reasons.push(`Experiência na área de ${job.area}`);
+    } else if (job.area === candidateData.experiences[0]?.title) {
+      areaScore = 20;
+      reasons.push(`Área relacionada à sua experiência`);
+    }
+  }
+  totalScore += areaScore;
+
+  // 3. Experience level compatibility (20% weight)
+  let experienceScore = 0;
+  const candidateYearsOfExperience = candidateData.experiences.length;
+
+  if (candidateYearsOfExperience > 0) {
+    experienceScore = Math.min(20, candidateYearsOfExperience * 5);
+    if (candidateYearsOfExperience >= 3) {
+      reasons.push(
+        `${candidateYearsOfExperience} experiências profissionais registradas`,
+      );
+    }
+  }
+  totalScore += experienceScore;
+
+  // 4. Location compatibility (10% weight)
+  let locationScore = 0;
+  if (job.workModel === "Remoto") {
+    locationScore = 10;
+    reasons.push("Trabalho remoto disponível");
+  } else if (candidateData.personal.city && job.city) {
+    const candidateCity = candidateData.personal.city.toLowerCase();
+    const jobCity = job.city.toLowerCase();
+    const candidateState = candidateData.personal.state?.toLowerCase() || "";
+    const companyState = company?.state?.toLowerCase() || "";
+
+    if (candidateCity.includes(jobCity) || jobCity.includes(candidateCity)) {
+      locationScore = 10;
+      reasons.push("Localização compatível");
+    } else if (
+      candidateState &&
+      companyState &&
+      candidateState === companyState
+    ) {
+      locationScore = 7;
+      reasons.push("Mesmo estado");
+    }
+  }
+  totalScore += locationScore;
+
+  // 5. Education and courses compatibility (5% weight)
+  let educationScore = 0;
+  if (candidateData.education.length > 0 || candidateData.courses.length > 0) {
+    educationScore = 5;
+    reasons.push("Formação acadêmica registrada");
+  }
+  totalScore += educationScore;
+
+  // Determine compatibility level
+  let compatibilityLevel: "Baixa" | "Média" | "Alta";
+  if (totalScore >= 70) {
+    compatibilityLevel = "Alta";
+  } else if (totalScore >= 40) {
+    compatibilityLevel = "Média";
+  } else {
+    compatibilityLevel = "Baixa";
+  }
+
+  return {
+    jobId: job.id,
+    compatibilityScore: Math.round(totalScore),
+    compatibilityLevel,
+    reasons: reasons.slice(0, 3), // Limit to top 3 reasons
+    job,
+    company,
+  };
+};
+
+// Get compatible jobs for a candidate
+export const getCompatibleJobs = (candidateCpf: string): JobCompatibility[] => {
+  const cleanCPF = candidateCpf.replace(/\D/g, "");
+  const candidateData = getCandidateData(cleanCPF);
+
+  if (!candidateData) {
+    return [];
+  }
+
+  const allJobs = getAllJobs();
+  const activeJobs = Object.values(allJobs).filter(
+    (job) => job.status === "active",
+  );
+
+  const compatibilities: JobCompatibility[] = activeJobs.map((job) => {
+    const company = getCompanyData(job.companyCnpj);
+    return calculateJobCompatibility(candidateData, job, company);
+  });
+
+  // Sort by compatibility score (highest first)
+  return compatibilities.sort(
+    (a, b) => b.compatibilityScore - a.compatibilityScore,
+  );
 };

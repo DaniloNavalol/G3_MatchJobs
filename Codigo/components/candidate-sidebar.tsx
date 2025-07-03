@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, Briefcase, UserCheck, Menu, X } from "lucide-react";
+import { Home, Briefcase, UserCheck, Menu, X, FileText } from "lucide-react";
 import { useState } from "react";
 
 export default function CandidateSidebar() {
@@ -27,6 +27,16 @@ export default function CandidateSidebar() {
         {
           name: "Vagas Compatíveis",
           href: "/dashboard/candidate/jobs/compatible",
+        },
+      ],
+    },
+    {
+      title: "Candidaturas",
+      icon: FileText,
+      items: [
+        {
+          name: "Minhas Candidaturas",
+          href: "/dashboard/candidate/applications",
         },
       ],
     },

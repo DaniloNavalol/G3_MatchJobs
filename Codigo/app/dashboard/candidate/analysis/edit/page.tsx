@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,26 +49,29 @@ export default function CandidateAnalysisEdit() {
     section3: {},
   });
 
-  const updateSection1 = (field: string, value: string) => {
+  const updateSection1 = useCallback((field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       section1: { ...prev.section1, [field]: value },
     }));
-  };
+  }, []);
 
-  const updateSection2 = (field: string, value: any) => {
+  const updateSection2 = useCallback((field: string, value: any) => {
     setFormData((prev) => ({
       ...prev,
       section2: { ...prev.section2, [field]: value },
     }));
-  };
+  }, []);
 
-  const updateSection3 = (field: string, value: string | number) => {
-    setFormData((prev) => ({
-      ...prev,
-      section3: { ...prev.section3, [field]: value },
-    }));
-  };
+  const updateSection3 = useCallback(
+    (field: string, value: string | number) => {
+      setFormData((prev) => ({
+        ...prev,
+        section3: { ...prev.section3, [field]: value },
+      }));
+    },
+    [],
+  );
 
   const handleWorkEnvironmentChange = (value: string, checked: boolean) => {
     const current = formData.section2.workEnvironment;
@@ -188,17 +191,69 @@ export default function CandidateAnalysisEdit() {
     }
   }, []);
 
-  const nextSection = () => {
-    if (currentSection < 3) {
-      setCurrentSection(currentSection + 1);
-    }
-  };
+  const nextSection = useCallback(
+    (e?: React.MouseEvent) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (currentSection < 3) {
+        setCurrentSection(currentSection + 1);
+      }
+    },
+    [currentSection],
+  );
 
-  const prevSection = () => {
-    if (currentSection > 1) {
-      setCurrentSection(currentSection - 1);
-    }
-  };
+  const prevSection = useCallback(
+    (e?: React.MouseEvent) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (currentSection > 1) {
+        setCurrentSection(currentSection - 1);
+      }
+    },
+    [currentSection],
+  );
+
+  // Função para prevenir scroll automático
+  const handleTextareaFocus = useCallback(
+    (e: React.FocusEvent<HTMLTextAreaElement>) => {
+      e.preventDefault();
+      // Salvar posição do scroll atual
+      const currentScrollY = window.scrollY;
+      // Garantir que a posição seja mantida
+      setTimeout(() => {
+        if (window.scrollY !== currentScrollY) {
+          window.scrollTo({ top: currentScrollY, behavior: "instant" });
+        }
+      }, 0);
+    },
+    [],
+  );
+
+  const handleTextareaChange = useCallback(
+    (field: string, value: string, section: number) => {
+      const currentScrollY = window.scrollY;
+
+      if (section === 1) {
+        updateSection1(field, value);
+      } else if (section === 2) {
+        updateSection2(field, value);
+      } else if (section === 3) {
+        updateSection3(field, value);
+      }
+
+      // Manter posição do scroll
+      setTimeout(() => {
+        if (window.scrollY !== currentScrollY) {
+          window.scrollTo({ top: currentScrollY, behavior: "instant" });
+        }
+      }, 0);
+    },
+    [updateSection1, updateSection2, updateSection3],
+  );
 
   const Section1 = () => (
     <Card>
@@ -223,8 +278,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva detalhadamente sua experiência..."
               value={formData.section1.collaboration || ""}
-              onChange={(e) => updateSection1("collaboration", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("collaboration", e.target.value, 1)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[100px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -238,8 +297,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva seu processo de resolução de problemas..."
               value={formData.section1.problemSolving || ""}
-              onChange={(e) => updateSection1("problemSolving", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("problemSolving", e.target.value, 1)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[100px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -254,8 +317,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva sua abordagem de comunicação..."
               value={formData.section1.communication || ""}
-              onChange={(e) => updateSection1("communication", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("communication", e.target.value, 1)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[100px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -269,8 +336,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva sua iniciativa e os resultados..."
               value={formData.section1.initiative || ""}
-              onChange={(e) => updateSection1("initiative", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("initiative", e.target.value, 1)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[100px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -284,8 +355,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva sua experiência de adaptação..."
               value={formData.section1.adaptation || ""}
-              onChange={(e) => updateSection1("adaptation", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("adaptation", e.target.value, 1)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[100px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -299,8 +374,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva sua experiência de influência/motivação..."
               value={formData.section1.influence || ""}
-              onChange={(e) => updateSection1("influence", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("influence", e.target.value, 1)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[100px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -314,8 +393,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva seu processo de aprendizado contínuo..."
               value={formData.section1.learning || ""}
-              onChange={(e) => updateSection1("learning", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("learning", e.target.value, 1)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[100px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -327,7 +410,7 @@ export default function CandidateAnalysisEdit() {
   const Section2 = () => (
     <Card>
       <CardHeader className="bg-green-600 text-white">
-        <CardTitle>2. Expectativas e Preferências</CardTitle>
+        <CardTitle>2. Expectativas e Prefer��ncias</CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
         <div>
@@ -407,8 +490,12 @@ export default function CandidateAnalysisEdit() {
           <Textarea
             placeholder="Descreva seus objetivos de carreira..."
             value={formData.section2.careerGoals}
-            onChange={(e) => updateSection2("careerGoals", e.target.value)}
+            onChange={(e) =>
+              handleTextareaChange("careerGoals", e.target.value, 2)
+            }
+            onFocus={handleTextareaFocus}
             className="min-h-[100px]"
+            autoComplete="off"
             required
           />
         </div>
@@ -445,9 +532,11 @@ export default function CandidateAnalysisEdit() {
               placeholder="Descreva sua abordagem sistemática..."
               value={formData.section3.logicalReasoning || ""}
               onChange={(e) =>
-                updateSection3("logicalReasoning", e.target.value)
+                handleTextareaChange("logicalReasoning", e.target.value, 3)
               }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -464,8 +553,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva seu processo de análise de dados..."
               value={formData.section3.dataAnalysis || ""}
-              onChange={(e) => updateSection3("dataAnalysis", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("dataAnalysis", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -530,9 +623,11 @@ export default function CandidateAnalysisEdit() {
               placeholder="Descreva sua abordagem empática e assertiva..."
               value={formData.section3.interpersonalSkills || ""}
               onChange={(e) =>
-                updateSection3("interpersonalSkills", e.target.value)
+                handleTextareaChange("interpersonalSkills", e.target.value, 3)
               }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -549,9 +644,11 @@ export default function CandidateAnalysisEdit() {
               placeholder="Descreva sua capacidade de mediação..."
               value={formData.section3.conflictResolution || ""}
               onChange={(e) =>
-                updateSection3("conflictResolution", e.target.value)
+                handleTextareaChange("conflictResolution", e.target.value, 3)
               }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -569,8 +666,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva sua experiência de aprendizado com falhas..."
               value={formData.section3.growthMindset || ""}
-              onChange={(e) => updateSection3("growthMindset", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("growthMindset", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -586,8 +687,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva sua flexibilidade em cenários de incerteza..."
               value={formData.section3.adaptability || ""}
-              onChange={(e) => updateSection3("adaptability", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("adaptability", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -604,8 +709,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva suas motivações intrínsecas e extrínsecas..."
               value={formData.section3.motivation || ""}
-              onChange={(e) => updateSection3("motivation", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("motivation", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -619,8 +728,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva sua resiliência e foco sob pressão..."
               value={formData.section3.resilience || ""}
-              onChange={(e) => updateSection3("resilience", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("resilience", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -637,8 +750,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva seu pensamento divergente e abordagem criativa..."
               value={formData.section3.creativity || ""}
-              onChange={(e) => updateSection3("creativity", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("creativity", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -654,8 +771,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva suas ideias inovadoras para onboarding..."
               value={formData.section3.innovation || ""}
-              onChange={(e) => updateSection3("innovation", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("innovation", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -673,8 +794,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva seus princípios éticos e tomada de decisão..."
               value={formData.section3.ethics || ""}
-              onChange={(e) => updateSection3("ethics", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("ethics", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>
@@ -690,8 +815,12 @@ export default function CandidateAnalysisEdit() {
             <Textarea
               placeholder="Descreva seus valores inegociáveis e como os alinha..."
               value={formData.section3.values || ""}
-              onChange={(e) => updateSection3("values", e.target.value)}
+              onChange={(e) =>
+                handleTextareaChange("values", e.target.value, 3)
+              }
+              onFocus={handleTextareaFocus}
               className="min-h-[120px]"
+              autoComplete="off"
               required
             />
           </div>

@@ -25,6 +25,9 @@ export interface BehavioralInsights {
     leadership: string;
     problemSolving: string;
     adaptability: string;
+    collaboration: string;
+    proactivity: string;
+    emotionalIntelligence: string;
   };
   suggestions: {
     recommendedPositions: string[];
@@ -105,7 +108,10 @@ GERE UM RELATÓRIO EM JSON com a seguinte estrutura EXATA:
     "decision": "Estilo de tomada de decisão (ex: baseada em evidências)",
     "leadership": "Estilo de liderança",
     "problemSolving": "Abordagem para resolver problemas",
-    "adaptability": "Capacidade de adaptação"
+    "adaptability": "Capacidade de adaptação",
+    "collaboration": "Capacidade de colaboração e trabalho em equipe",
+    "proactivity": "Nível de proatividade e iniciativa",
+    "emotionalIntelligence": "Inteligência emocional e gestão de relacionamentos"
   },
   "suggestions": {
     "recommendedPositions": ["Cargo 1", "Cargo 2", "Cargo 3"],
@@ -159,6 +165,9 @@ IMPORTANTE:
         leadership: "Em análise",
         problemSolving: "Em análise",
         adaptability: "Em análise",
+        collaboration: "Em análise",
+        proactivity: "Em análise",
+        emotionalIntelligence: "Em análise",
       },
       suggestions: {
         recommendedPositions: ["Análise em processamento"],

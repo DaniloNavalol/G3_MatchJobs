@@ -174,13 +174,17 @@ export default function CandidateDashboard() {
               <div className="h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-lg"></div>
               <CardContent className="p-6 text-center -mt-10">
                 <div className="relative inline-block">
-                  <Image
-                    src="/assets/img/sauro.jpg"
-                    alt={candidateData.personal.fullName}
-                    width={80}
-                    height={80}
-                    className="rounded-full border-4 border-white shadow-lg"
-                  />
+                  {candidateData.personal.profileImage ? (
+                    <img
+                      src={candidateData.personal.profileImage}
+                      alt={candidateData.personal.fullName}
+                      className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-full border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center">
+                      <User className="w-8 h-8 text-gray-500" />
+                    </div>
+                  )}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mt-4">
                   {candidateData.personal.fullName || "Nome não informado"}
@@ -637,9 +641,13 @@ export default function CandidateDashboard() {
                       <Badge className={statusInfo.color}>
                         {statusInfo.text}
                       </Badge>
-                      <Button variant="outline" size="sm">
-                        Detalhes
-                      </Button>
+                      <Link
+                        href={`/dashboard/candidate/applications/${application.id}`}
+                      >
+                        <Button variant="outline" size="sm">
+                          Detalhes
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 );
@@ -647,7 +655,9 @@ export default function CandidateDashboard() {
             )}
           </div>
           <div className="mt-4 text-center">
-            <Button variant="outline">Ver todas as candidaturas</Button>
+            <Link href="/dashboard/candidate/applications">
+              <Button variant="outline">Ver todas as candidaturas</Button>
+            </Link>
           </div>
         </CardContent>
       </Card>

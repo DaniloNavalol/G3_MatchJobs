@@ -18,6 +18,8 @@ import {
   createUser,
   clearAllStorage,
   getUserByEmail,
+  debugListAllUsers,
+  debugFindUserByEmail,
 } from "@/lib/storage";
 
 export default function LoginPage() {
@@ -85,9 +87,27 @@ export default function LoginPage() {
     setError("");
 
     try {
+      console.log("Login attempt with:", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Debug: Check if user exists
+      const foundUser = debugFindUserByEmail(formData.email);
+      if (foundUser) {
+        console.log("User found in database:", {
+          id: foundUser.id,
+          email: foundUser.email,
+        });
+      } else {
+        console.log("No user found with email:", formData.email);
+      }
+
       const user = authenticateUser(formData.email, formData.password);
 
       if (!user) {
+        // List all users for debugging
+        debugListAllUsers();
         throw new Error("Email ou senha incorretos");
       }
 
@@ -98,6 +118,7 @@ export default function LoginPage() {
       const dashboardUrl = getUserDashboardUrl(user.userType);
       router.push(dashboardUrl);
     } catch (error) {
+      console.error("Login error:", error);
       setError(error instanceof Error ? error.message : "Erro ao fazer login");
     } finally {
       setLoading(false);
@@ -143,13 +164,37 @@ export default function LoginPage() {
               </p>
 
               <div className="mt-4 p-3 bg-gray-100 rounded-lg">
-                <p className="text-xs text-gray-600 text-center">
-                  <strong>Para teste:</strong>
-                  <br />
-                  Candidato: candidato@teste.com / 12345678
-                  <br />
-                  Empresa: empresa@teste.com / 12345678
+                <p className="text-xs text-gray-600 text-center mb-2">
+                  <strong>Para teste - Clique para preencher:</strong>
                 </p>
+                <div className="flex justify-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setFormData({
+                        email: "candidato@teste.com",
+                        password: "12345678",
+                      });
+                    }}
+                  >
+                    Login Candidato
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setFormData({
+                        email: "empresa@teste.com",
+                        password: "12345678",
+                      });
+                    }}
+                  >
+                    Login Empresa
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -158,8 +203,8 @@ export default function LoginPage() {
                 <Alert variant="destructive">
                   <AlertDescription>
                     {error}
-                    {error.includes("não encontrado") && (
-                      <div className="mt-2">
+                    <div className="mt-3 space-y-2">
+                      <div className="flex flex-wrap gap-2">
                         <Button
                           type="button"
                           variant="outline"
@@ -178,8 +223,39 @@ export default function LoginPage() {
                         >
                           Criar usuários de teste
                         </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            debugListAllUsers();
+                            alert(
+                              "Verifique o console (F12) para ver todos os usuários cadastrados",
+                            );
+                          }}
+                        >
+                          Debug: Ver usuários
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            clearAllStorage();
+                            setError("");
+                            alert(
+                              "Todos os dados foram limpos! Agora você pode criar novos usuários.",
+                            );
+                          }}
+                        >
+                          Limpar dados
+                        </Button>
                       </div>
-                    )}
+                      <p className="text-xs text-gray-500">
+                        Se você está tendo problemas para fazer login, use os
+                        botões acima para debug ou criar dados de teste.
+                      </p>
+                    </div>
                   </AlertDescription>
                 </Alert>
               )}
