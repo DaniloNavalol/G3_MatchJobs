@@ -390,7 +390,7 @@ export default function JobEditPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {stages.map((stage, index) => (
-                <div key={index} className="border rounded-lg p-4">
+                <div key={`stage-${index}`} className="border rounded-lg p-4">
                   <Input
                     value={stage}
                     onChange={(e) => updateStage(index, e.target.value)}
@@ -433,7 +433,10 @@ export default function JobEditPage() {
           <CardContent>
             <div className="space-y-4">
               {questions.map((question, index) => (
-                <div key={index} className="flex items-center space-x-4">
+                <div
+                  key={`question-${index}`}
+                  className="flex items-center space-x-4"
+                >
                   <div className="flex-1">
                     <Input
                       value={question}

@@ -361,8 +361,11 @@ export default function CandidateDashboard() {
                           {candidateData.skills.technical.length > 0 ? (
                             candidateData.skills.technical
                               .slice(0, 6)
-                              .map((skill) => (
-                                <Badge key={skill} variant="secondary">
+                              .map((skill, index) => (
+                                <Badge
+                                  key={`page-tech-${index}`}
+                                  variant="secondary"
+                                >
                                   {skill}
                                 </Badge>
                               ))
@@ -381,8 +384,11 @@ export default function CandidateDashboard() {
                           {candidateData.skills.soft.length > 0 ? (
                             candidateData.skills.soft
                               .slice(0, 6)
-                              .map((knowledge) => (
-                                <Badge key={knowledge} variant="outline">
+                              .map((knowledge, index) => (
+                                <Badge
+                                  key={`page-know-${index}`}
+                                  variant="outline"
+                                >
                                   {knowledge}
                                 </Badge>
                               ))

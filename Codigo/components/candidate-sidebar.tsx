@@ -77,7 +77,7 @@ export default function CandidateSidebar() {
       <div className="sidebar-wrapper px-4">
         <nav className="space-y-2">
           {menuItems.map((section, index) => (
-            <div key={index} className="space-y-1">
+            <div key={`section-${index}`} className="space-y-1">
               <div className="flex items-center space-x-3 px-3 py-2 text-gray-300">
                 <section.icon size={20} />
                 {!isCollapsed && (
@@ -88,7 +88,7 @@ export default function CandidateSidebar() {
                 <div className="ml-6 space-y-1">
                   {section.items.map((item, itemIndex) => (
                     <Link
-                      key={itemIndex}
+                      key={`${index}-${itemIndex}-${item.href}`}
                       href={item.href}
                       className={`block px-3 py-2 rounded text-sm transition-colors ${
                         pathname === item.href

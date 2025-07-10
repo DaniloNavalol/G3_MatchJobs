@@ -314,7 +314,7 @@ export default function CompatibleJobsPage() {
                           <div className="flex flex-wrap gap-1">
                             {jobCompatibility.reasons.map((reason, index) => (
                               <Badge
-                                key={index}
+                                key={`reason-${jobCompatibility.jobId}-${index}`}
                                 variant="secondary"
                                 className="text-xs"
                               >

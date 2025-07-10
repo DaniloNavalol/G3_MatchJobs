@@ -1,6 +1,14 @@
 // Storage utilities for candidate and company data management
 // Using CPF for candidates and CNPJ for companies as unique identifiers
 
+// Generate unique ID function
+let idCounter = 0;
+const generateUniqueId = (): string => {
+  const timestamp = Date.now();
+  const counter = ++idCounter;
+  return `${timestamp}-${counter}`;
+};
+
 export interface CandidatePersonalData {
   cpf: string;
   fullName: string;
@@ -254,8 +262,9 @@ export const formatCPF = (cpf: string): string => {
 };
 
 export const validateCPF = (cpf: string): boolean => {
+  if (!cpf || typeof cpf !== "string") return false;
   const digits = cpf.replace(/\D/g, "");
-  return digits.length === 11;
+  return digits.length === 11 && digits !== "00000000000";
 };
 
 export const formatCNPJ = (cnpj: string): string => {
@@ -295,7 +304,8 @@ export const saveCandidateData = (data: CandidateData): boolean => {
 
   try {
     const candidates = getAllCandidates();
-    const cleanCPF = data.personal.cpf.replace(/\D/g, "");
+    const rawCPF = data.personal.cpf;
+    const cleanCPF = rawCPF ? rawCPF.replace(/\D/g, "") : "";
 
     if (!validateCPF(cleanCPF)) {
       throw new Error("CPF inválido");
@@ -376,7 +386,7 @@ export const addCandidateExperience = (
   if (existingData) {
     const newExperience: CandidateExperience = {
       ...experience,
-      id: Date.now().toString(),
+      id: generateUniqueId(),
     };
 
     return saveCandidateData({
@@ -435,7 +445,7 @@ export const addCandidateEducation = (
   if (existingData) {
     const newEducation: CandidateEducation = {
       ...education,
-      id: Date.now().toString(),
+      id: generateUniqueId(),
     };
 
     return saveCandidateData({
@@ -494,7 +504,7 @@ export const addCandidateCourse = (
   if (existingData) {
     const newCourse: CandidateCourse = {
       ...course,
-      id: Date.now().toString(),
+      id: generateUniqueId(),
     };
 
     return saveCandidateData({
@@ -533,7 +543,7 @@ export const addCandidateLanguage = (
   if (existingData) {
     const newLanguage: CandidateLanguage = {
       ...language,
-      id: Date.now().toString(),
+      id: generateUniqueId(),
     };
 
     return saveCandidateData({
@@ -922,7 +932,7 @@ export const createJob = (
   jobData: Omit<Job, "id" | "createdAt" | "updatedAt">,
 ): string | null => {
   try {
-    const jobId = Date.now().toString();
+    const jobId = generateUniqueId();
     const now = new Date().toISOString();
 
     const job: Job = {

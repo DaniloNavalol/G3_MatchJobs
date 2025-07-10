@@ -362,7 +362,10 @@ export default function ApplicationDetailsPage() {
               const isCurrent = stage.stage === application.currentStage;
 
               return (
-                <div key={index} className="relative flex items-start">
+                <div
+                  key={`timeline-${index}-${stage.stage}`}
+                  className="relative flex items-start"
+                >
                   {/* Timeline line */}
                   {!isLast && (
                     <div className="absolute left-6 top-12 w-0.5 h-16 bg-gray-200"></div>

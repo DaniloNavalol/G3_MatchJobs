@@ -379,7 +379,7 @@ export default function CandidateAnalysis() {
               {insights.suggestions.recommendedPositions.map(
                 (position, index) => (
                   <Badge
-                    key={index}
+                    key={`position-${index}`}
                     variant="secondary"
                     className="block text-center py-2 text-xs"
                   >
@@ -403,7 +403,7 @@ export default function CandidateAnalysis() {
             <div className="space-y-2">
               {insights.suggestions.standoutTips.map((tip, index) => (
                 <div
-                  key={index}
+                  key={`tip-${index}`}
                   className="bg-green-50 border border-green-200 rounded p-2"
                 >
                   <p className="text-xs text-green-800">• {tip}</p>
@@ -425,7 +425,7 @@ export default function CandidateAnalysis() {
             <div className="space-y-2">
               {insights.suggestions.developmentAreas.map((area, index) => (
                 <div
-                  key={index}
+                  key={`area-${index}`}
                   className="bg-orange-50 border border-orange-200 rounded p-2"
                 >
                   <p className="text-xs text-orange-800">• {area}</p>

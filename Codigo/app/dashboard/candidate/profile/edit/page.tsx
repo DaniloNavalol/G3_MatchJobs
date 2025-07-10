@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
+import { parseResumeWithAI, type ResumeParsingResult } from "@/lib/gemini";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,8 +27,10 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  Upload,
+  Loader2,
 } from "lucide-react";
-import Image from "next/image";
+
 import Link from "next/link";
 import {
   getCandidateData,
@@ -36,7 +40,6 @@ import {
   addCandidateCourse,
   addCandidateLanguage,
   updateCandidateSkills,
-  updateCandidateDocuments,
   getCurrentUserCPF,
   setCurrentUserCPF,
   calculateProfileCompletion,
@@ -80,7 +83,7 @@ export default function CandidateProfileEdit() {
     technical: [],
     soft: [],
   });
-  const [documents, setDocuments] = useState<CandidateDocuments>({});
+
   const [newSkill, setNewSkill] = useState("");
 
   // Modal states
@@ -90,8 +93,6 @@ export default function CandidateProfileEdit() {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [editingExperience, setEditingExperience] =
     useState<CandidateExperience | null>(null);
-  const [editingEducation, setEditingEducation] =
-    useState<CandidateEducation | null>(null);
 
   // Form states for new items
   const [newExperience, setNewExperience] = useState({
@@ -123,6 +124,8 @@ export default function CandidateProfileEdit() {
   const [knowledgeSkills, setKnowledgeSkills] = useState<string[]>([]);
   const [newKnowledge, setNewKnowledge] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
+  const [processingResume, setProcessingResume] = useState(false);
 
   const tabs = ["info", "experience", "education", "skills"];
   const currentTabIndex = tabs.indexOf(currentTab);
@@ -139,7 +142,7 @@ export default function CandidateProfileEdit() {
         setCourses(candidateData.courses);
         setLanguages(candidateData.languages);
         setSkills(candidateData.skills);
-        setDocuments(candidateData.documents);
+
         setKnowledgeSkills(candidateData.skills.soft || []);
         setProfileCompletion(calculateProfileCompletion(candidateData));
       }
@@ -250,6 +253,295 @@ export default function CandidateProfileEdit() {
 
   const removeProfileImage = () => {
     updatePersonalField("profileImage", "");
+  };
+
+  const extractTextFromPDF = async (file: File): Promise<string> => {
+    try {
+      // Use a more lightweight approach for PDF text extraction
+      // Instead of full PDF.js, we'll use a simpler method
+      const arrayBuffer = await file.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      // Convert PDF binary to text using a simple regex approach
+      // This works for most text-based PDFs
+      const text = new TextDecoder("latin1").decode(uint8Array);
+      const textItems = text.match(/\(([^)]+)\)/g);
+
+      if (!textItems || textItems.length === 0) {
+        throw new Error("PDF não contém texto extraível");
+      }
+
+      // Extract and clean text
+      const extractedText = textItems
+        .map((item) => item.slice(1, -1)) // Remove parentheses
+        .filter((item) => item.length > 1) // Filter out single characters
+        .join(" ")
+        .replace(/\\[rn]/g, " ") // Replace escape sequences
+        .replace(/\s+/g, " ") // Normalize whitespace
+        .trim();
+
+      if (extractedText.length < 50) {
+        throw new Error("PDF contém muito pouco texto");
+      }
+
+      return extractedText;
+    } catch (error) {
+      console.error("Error extracting text from PDF:", error);
+
+      // Fallback: try to extract any readable text
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const text = new TextDecoder("utf-8").decode(arrayBuffer);
+        const cleanText = text
+          .replace(/[^\x20-\x7E\u00C0-\u00FF]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+
+        if (cleanText.length > 100) {
+          return cleanText;
+        }
+      } catch (fallbackError) {
+        console.error("Fallback extraction failed:", fallbackError);
+      }
+
+      throw new Error(
+        "Erro ao ler o arquivo PDF. Tente com um PDF que contenha texto selecionável ou use um arquivo de texto.",
+      );
+    }
+  };
+
+  const handleResumeUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate user has a valid CPF first
+    const currentCPF = getCurrentUserCPF();
+    if (!currentCPF || !validateCPF(currentCPF)) {
+      alert(
+        "Erro: CPF inválido. Por favor, complete seu perfil com um CPF válido antes de fazer upload do currículo.",
+      );
+      event.target.value = ""; // Clear the file input
+      return;
+    }
+
+    // Validate file type - accept PDF and text files
+    const allowedTypes = ["application/pdf", "text/plain", "text/txt"];
+    const isValidType =
+      allowedTypes.includes(file.type) ||
+      file.name.toLowerCase().endsWith(".txt");
+
+    if (!isValidType) {
+      alert("Por favor, selecione um arquivo PDF ou TXT.");
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("O arquivo deve ter no máximo 5MB.");
+      return;
+    }
+
+    try {
+      setUploadingResume(true);
+
+      // Extract text based on file type
+      let resumeText: string;
+
+      if (
+        file.type === "text/plain" ||
+        file.name.toLowerCase().endsWith(".txt")
+      ) {
+        // Handle text files
+        resumeText = await file.text();
+      } else {
+        // Handle PDF files
+        resumeText = await extractTextFromPDF(file);
+      }
+
+      if (!resumeText.trim()) {
+        alert(
+          "Não foi possível extrair texto do PDF. Verifique se o arquivo não está protegido ou se é um PDF com texto selecionável.",
+        );
+        return;
+      }
+
+      setProcessingResume(true);
+
+      // Process resume with AI
+      const parsedData = await parseResumeWithAI(resumeText);
+
+      // Check if any data was actually extracted
+      const hasData =
+        (parsedData.personalData &&
+          Object.keys(parsedData.personalData).length > 0) ||
+        parsedData.experiences.length > 0 ||
+        parsedData.education.length > 0 ||
+        parsedData.skills.technical.length > 0 ||
+        parsedData.skills.soft.length > 0;
+
+      if (!hasData) {
+        alert(
+          "Não foi possível extrair informações do currículo. Isso pode acontecer se:\n" +
+            "• A IA está temporariamente indisponível\n" +
+            "• O arquivo não contém texto legível\n" +
+            "• O formato não é reconhecido\n\n" +
+            "Tente novamente em alguns minutos ou preencha os campos manualmente.",
+        );
+        return;
+      }
+
+      // Check if only basic data was extracted (fallback was used)
+      const onlyBasicData =
+        !parsedData.experiences.length &&
+        !parsedData.education.length &&
+        Object.keys(parsedData.personalData).length <= 2;
+
+      let confirmMessage =
+        "Currículo processado com sucesso! Deseja preencher automaticamente os campos do perfil com as informações extraídas? (Isso substituirá os dados atuais)";
+
+      if (onlyBasicData) {
+        confirmMessage =
+          "A IA estava indisponível, mas conseguimos extrair alguns dados básicos (email, telefone, habilidades). Deseja aplicar essas informações ao perfil?";
+      }
+
+      if (confirm(confirmMessage)) {
+        await applyParsedDataToProfile(parsedData);
+        alert("Perfil atualizado com sucesso com as informações do currículo!");
+      }
+    } catch (error) {
+      console.error("Error processing resume:", error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      let userMessage = "Erro ao processar o currículo.";
+
+      if (errorMessage.includes("Request timeout")) {
+        userMessage +=
+          "\n\nO processamento demorou mais que o esperado. Isso pode acontecer com currículos muito longos ou quando a IA está sobrecarregada.\n\nTente:\n• Um arquivo menor\n• Aguardar alguns minutos\n• Usar um arquivo de texto (.txt)";
+      } else if (
+        errorMessage.includes("Failed to fetch") ||
+        errorMessage.includes("fetch")
+      ) {
+        userMessage +=
+          "\n\nProblema de conectividade com a IA. Isso pode ser temporário.\n\nTente:\n• Verificar sua conexão de internet\n• Aguardar alguns minutos\n• Tentar novamente";
+      } else if (
+        errorMessage.includes("503") ||
+        errorMessage.includes("502") ||
+        errorMessage.includes("504")
+      ) {
+        userMessage +=
+          "\n\nA IA está temporariamente indisponível. Tente novamente em alguns minutos.";
+      } else if (errorMessage.includes("429")) {
+        userMessage +=
+          "\n\nMuitas tentativas. Aguarde um momento antes de tentar novamente.";
+      } else {
+        userMessage +=
+          "\n\nVerifique se o arquivo está legível e tente novamente.";
+      }
+
+      alert(userMessage);
+    } finally {
+      setUploadingResume(false);
+      setProcessingResume(false);
+      // Clear the file input
+      event.target.value = "";
+    }
+  };
+
+  const applyParsedDataToProfile = async (parsedData: ResumeParsingResult) => {
+    const currentCPF = getCurrentUserCPF();
+    if (!currentCPF) return;
+
+    // Update personal data
+    if (parsedData.personalData) {
+      const updatedPersonalData = {
+        ...personalData,
+        ...Object.fromEntries(
+          Object.entries(parsedData.personalData).filter(
+            ([, value]) => value && value.trim() !== "",
+          ),
+        ),
+        // Ensure the CPF is set correctly from the current user
+        cpf: currentCPF,
+      };
+      setPersonalData(updatedPersonalData);
+      updateCandidatePersonalData(currentCPF, updatedPersonalData);
+    }
+
+    // Update experiences
+    if (parsedData.experiences && parsedData.experiences.length > 0) {
+      for (const exp of parsedData.experiences) {
+        if (exp.title && exp.company) {
+          addCandidateExperience(currentCPF, exp);
+        }
+      }
+      const updatedData = getCandidateData(currentCPF);
+      if (updatedData) {
+        setExperiences(updatedData.experiences);
+      }
+    }
+
+    // Update education
+    if (parsedData.education && parsedData.education.length > 0) {
+      for (const edu of parsedData.education) {
+        if (edu.degree && edu.institution) {
+          addCandidateEducation(currentCPF, edu);
+        }
+      }
+      const updatedData = getCandidateData(currentCPF);
+      if (updatedData) {
+        setEducation(updatedData.education);
+      }
+    }
+
+    // Update courses
+    if (parsedData.courses && parsedData.courses.length > 0) {
+      for (const course of parsedData.courses) {
+        if (course.name && course.institution) {
+          addCandidateCourse(currentCPF, course);
+        }
+      }
+      const updatedData = getCandidateData(currentCPF);
+      if (updatedData) {
+        setCourses(updatedData.courses);
+      }
+    }
+
+    // Update languages
+    if (parsedData.languages && parsedData.languages.length > 0) {
+      for (const lang of parsedData.languages) {
+        if (lang.name && lang.level) {
+          addCandidateLanguage(currentCPF, lang);
+        }
+      }
+      const updatedData = getCandidateData(currentCPF);
+      if (updatedData) {
+        setLanguages(updatedData.languages);
+      }
+    }
+
+    // Update skills
+    if (parsedData.skills) {
+      const updatedSkills = {
+        technical: [...skills.technical, ...parsedData.skills.technical].filter(
+          (skill, index, arr) => arr.indexOf(skill) === index,
+        ),
+        soft: [...skills.soft, ...parsedData.skills.soft].filter(
+          (skill, index, arr) => arr.indexOf(skill) === index,
+        ),
+      };
+      setSkills(updatedSkills);
+      setKnowledgeSkills(updatedSkills.soft);
+      updateCandidateSkills(currentCPF, updatedSkills);
+    }
+
+    // Update profile completion
+    const finalData = getCandidateData(currentCPF);
+    if (finalData) {
+      setProfileCompletion(calculateProfileCompletion(finalData));
+    }
   };
 
   const handleSavePersonalData = () => {
@@ -1023,9 +1315,9 @@ export default function CandidateProfileEdit() {
                     <div>
                       <h4 className="font-medium mb-3">Suas Habilidades</h4>
                       <div className="flex flex-wrap gap-2">
-                        {skills.technical.map((skill) => (
+                        {skills.technical.map((skill, index) => (
                           <Badge
-                            key={skill}
+                            key={`tech-${index}-${skill.slice(0, 10)}`}
                             variant="secondary"
                             className="flex items-center space-x-2"
                           >
@@ -1073,9 +1365,9 @@ export default function CandidateProfileEdit() {
                     <div>
                       <h4 className="font-medium mb-3">Seus Conhecimentos</h4>
                       <div className="flex flex-wrap gap-2">
-                        {knowledgeSkills.map((knowledge) => (
+                        {knowledgeSkills.map((knowledge, index) => (
                           <Badge
-                            key={knowledge}
+                            key={`know-${index}-${knowledge.slice(0, 10)}`}
                             variant="outline"
                             className="flex items-center space-x-2"
                           >
@@ -1166,11 +1458,63 @@ export default function CandidateProfileEdit() {
                 <h3 className="text-lg font-semibold mb-4">Documentos</h3>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="resume">Currículo (PDF) *</Label>
-                    <Input id="resume" type="file" accept=".pdf" />
-                    <p className="text-sm text-gray-500 mt-1">
-                      Tamanho máximo: 5MB
-                    </p>
+                    <Label htmlFor="resume">Currículo (PDF ou TXT) *</Label>
+                    <div className="space-y-2">
+                      <Input
+                        id="resume"
+                        type="file"
+                        accept=".pdf,.txt,text/plain"
+                        onChange={handleResumeUpload}
+                        disabled={uploadingResume || processingResume}
+                      />
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-500">
+                          Aceita PDF ou TXT - Tamanho máximo: 5MB
+                        </p>
+                        {(uploadingResume || processingResume) && (
+                          <div className="flex items-center text-sm text-blue-600">
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            {uploadingResume
+                              ? "Lendo arquivo..."
+                              : "Processando com IA... (pode levar até 1 min)"}
+                          </div>
+                        )}
+                      </div>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-start space-x-3">
+                          <Upload className="w-5 h-5 text-blue-600 mt-0.5" />
+                          <div>
+                            <h4 className="text-sm font-medium text-blue-900 mb-1">
+                              🤖 Preenchimento Automático com IA
+                            </h4>
+                            <p className="text-sm text-blue-700 mb-2">
+                              Faça upload do seu currículo (PDF ou TXT) e nossa
+                              IA irá extrair automaticamente suas informações
+                              para preencher o perfil:
+                            </p>
+                            <div className="text-xs text-blue-600 mb-2 p-2 bg-blue-25 rounded">
+                              📡 <strong>Sistema Robusto:</strong> Se a IA
+                              estiver indisponível, ainda extrairemos dados
+                              básicos como email e telefone automaticamente.
+                            </div>
+                            <ul className="text-xs text-blue-600 space-y-1">
+                              <li>
+                                • Dados pessoais (nome, email, telefone,
+                                endereço)
+                              </li>
+                              <li>• Experiências profissionais</li>
+                              <li>• Formação acadêmica e cursos</li>
+                              <li>• Habilidades técnicas e comportamentais</li>
+                              <li>• Idiomas e certificações</li>
+                            </ul>
+                            <p className="text-xs text-blue-600 mt-2 font-medium">
+                              ⚡ Economize tempo - deixe a IA fazer o trabalho
+                              pesado!
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div>
