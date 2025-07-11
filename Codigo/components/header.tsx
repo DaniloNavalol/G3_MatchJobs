@@ -270,17 +270,19 @@ export default function Header() {
 
             {/* Mobile menu */}
             {isMenuOpen && (
-              <div className="lg:hidden py-4 border-t border-gray-200">
+              <div className="lg:hidden py-4 border-t border-gray-200 relative z-50">
                 <nav className="flex flex-col space-y-4">
                   <Link
                     href="/"
                     className="text-gray-700 hover:text-blue-600 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     Início
                   </Link>
                   <Link
                     href="/jobs"
                     className="text-gray-700 hover:text-blue-600 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     Buscar Vagas
                   </Link>
@@ -319,13 +321,19 @@ export default function Header() {
                       </div>
                       <div className="flex flex-col space-y-2">
                         <button
-                          onClick={goToDashboard}
+                          onClick={() => {
+                            goToDashboard();
+                            setIsMenuOpen(false);
+                          }}
                           className="head-btn1 text-center"
                         >
                           Dashboard
                         </button>
                         <button
-                          onClick={handleLogout}
+                          onClick={() => {
+                            handleLogout();
+                            setIsMenuOpen(false);
+                          }}
                           className="head-btn2 text-center"
                         >
                           Logout
@@ -338,12 +346,14 @@ export default function Header() {
                       <Link
                         href="/auth/register"
                         className="head-btn1 text-center"
+                        onClick={() => setIsMenuOpen(false)}
                       >
                         Cadastrar
                       </Link>
                       <Link
                         href="/auth/login"
                         className="head-btn2 text-center"
+                        onClick={() => setIsMenuOpen(false)}
                       >
                         Entrar
                       </Link>
@@ -359,7 +369,7 @@ export default function Header() {
       {/* Click outside to close menus */}
       {(showUserMenu || isMenuOpen) && (
         <div
-          className="fixed inset-0 z-40"
+          className="fixed inset-0 z-40 pointer-events-auto"
           onClick={() => {
             setShowUserMenu(false);
             setIsMenuOpen(false);
