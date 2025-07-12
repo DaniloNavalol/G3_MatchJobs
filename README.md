@@ -6,7 +6,27 @@
 
 O sistema permite que empresas gerenciem vagas de forma eficiente e que candidatos encontrem oportunidades adequadas ao seu perfil profissional, com suporte de inteligência artificial para recomendações personalizadas.
 
+## 🚀 Como Usar
 
+### Acesso Online
+Disponível imediatamente em:  
+🌐 [https://match-jobs.vercel.app](https://match-jobs.vercel.app)
+
+### Execução Local
+```bash
+1. Clone o repositório
+
+git clone https://github.com/seu-usuario/matchjobs.git
+
+2. Instale as dependências
+npm install
+
+3. Inicie o servidor de desenvolvimento
+npm run dev
+
+4. Acesse no navegador
+http://localhost:3000
+```
 ## 🧾 Licença (ANEXO A)
 
 @autores: -
@@ -53,10 +73,3 @@ Todo o material está sob a **Licença MIT**, podendo ser utilizado para fins ac
 > O SOFTWARE É FORNECIDO "COMO ESTÁ", SEM GARANTIA DE QUALQUER TIPO.
 
 Para mais informações, acesse: [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
-
-=======
-# PDS
-Projeto de Desenvolvimento de Software
->>>>>>> ad37150 (Saulo Santos_API_REACT e FRONT para IA)
-
-
