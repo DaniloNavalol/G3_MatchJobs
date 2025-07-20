@@ -26,6 +26,9 @@ npm run dev
 
 4. Acesse no navegador
 http://localhost:3000
+
+OBS:Não esquecer de adicionar sua própia chave API do gemini em Codigo/lib/gemini.ts
+
 ```
 ## 🧾 Licença (ANEXO A)
 
