@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Usuário - MatchJobs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #3b82f6;
+        }
+
+        main {
+            padding: 3rem 0;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 1.5rem 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        .subsection {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .subsection h3 {
+            color: #1f2937;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            background: #3b82f6;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            margin-bottom: 1rem;
+            padding-left: 3rem;
+            position: relative;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #3b82f6;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .feature-card h4 {
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .toc {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .toc h3 {
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">MatchJobs</div>
+                <div class="subtitle">Manual Completo do Usuário</div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <div class="nav-content">
+                <strong>Navegação Rápida</strong>
+                <ul class="nav-links">
+                    <li><a href="#introducao">Introdução</a></li>
+                    <li><a href="#candidatos">Para Candidatos</a></li>
+                    <li><a href="#empresas">Para Empresas</a></li>
+                    <li><a href="#upload-curriculo">Upload de Currículo</a></li>
+                    <li><a href="#analise-comportamental">Análise Comportamental</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Índice -->
+            <div class="toc">
+                <h3>📚 Índice do Manual</h3>
+                <ul>
+                    <li><a href="#introducao">1. Introdução ao MatchJobs</a></li>
+                    <li><a href="#primeiros-passos">2. Primeiros Passos</a></li>
+                    <li><a href="#candidatos">3. Funcionalidades para Candidatos</a></li>
+                    <li><a href="#empresas">4. Funcionalidades para Empresas</a></li>
+                    <li><a href="#upload-curriculo">5. Upload de Currículo com IA</a></li>
+                    <li><a href="#analise-comportamental">6. Análise Comportamental</a></li>
+                    <li><a href="#notificacoes">7. Sistema de Notificações</a></li>
+                    <li><a href="#faq">8. Perguntas Frequentes</a></li>
+                    <li><a href="#suporte">9. Suporte e Contato</a></li>
+                </ul>
+            </div>
+
+            <!-- Introdução -->
+            <section id="introducao" class="section">
+                <div class="section-header">
+                    <h2>🎯 Introdução ao MatchJobs</h2>
+                    <p>Sua plataforma completa para encontrar a oportunidade perfeita</p>
+                </div>
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3><span class="icon">🚀</span>O que é o MatchJobs?</h3>
+                        <p>O MatchJobs é uma plataforma inovadora que conecta candidatos e empresas de forma inteligente, utilizando análise comportamental e inteligência artificial para encontrar o match perfeito entre profissionais e oportunidades de trabalho.</p>
+                        
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <h4>🤖 IA Avançada</h4>
+                                <p>Nosso sistema de IA analisa currículos automaticamente e extrai informações relevantes para o seu perfil.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>🧠 Análise Comportamental</h4>
+                                <p>Avaliamos soft skills e características comportamentais para matches mais precisos.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>🎯 Matches Inteligentes</h4>
+                                <p>Algoritmo proprietário que considera tanto hard skills quanto soft skills para recomendações precisas.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">👥</span>Para quem é o MatchJobs?</h3>
+                        <div class="alert alert-info">
+                            <strong>Candidatos:</strong> Profissionais em busca de novas oportunidades que desejam ser encontrados pelas empresas certas com base em seu perfil completo.
+                        </div>
+                        <div class="alert alert-success">
+                            <strong>Empresas:</strong> Organizações que procuram talentos qualificados e que se encaixem na cultura e necessidades específicas da empresa.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Primeiros Passos -->
+            <section id="primeiros-passos" class="section">
+                <div class="section-header">
+                    <h2>🚪 Primeiros Passos</h2>
+                    <p>Como começar a usar a plataforma</p>
+                </div>
+                <div class="section-content">
+                    <div class="subsection">
+                    <h3><span class="icon">📝</span> Criando sua Conta</h3>
+                    <ol class="step-list">
+                        <li>Acesse a página inicial do MatchJobs</li>
+                        <li>Clique em "Cadastrar" no menu superior</li>
+                        <li>Escolha seu tipo de usuário: <strong>Candidato</strong> ou <strong>Empresa</strong></li>
+                        <li>Preencha as informações obrigatórias:
+                        <li>Faça login e complete seu perfil</li>
+                    </ol>
+
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">🔐</span>Fazendo Login</h3>
+                        <ol class="step-list">
+                            <li>Clique em "Entrar" no menu superior</li>
+                            <li>Digite seu e-mail e senha</li>
+                            <li>Você será redirecionado para seu dashboard personalizado</li>
+                        </ol>
+
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Esqueceu sua senha?</strong> Clique em "Esqueci minha senha" na tela de login para receber instruções de recuperação por e-mail.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Candidatos -->
+            <section id="candidatos" class="section">
+                <div class="section-header">
+                    <h2>👤 Funcionalidades para Candidatos</h2>
+                    <p>Tudo que você precisa saber para maximizar suas oportunidades</p>
+                </div>
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3><span class="icon">📋</span>Perfil do Candidato</h3>
+                        <p>Seu perfil é sua vitrine profissional. Quanto mais completo, melhores serão seus matches!</p>
+
+                        <h4>Seções do Perfil:</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Seção</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Dados Pessoais</strong></td>
+                                    <td>Nome, foto, contato, localização</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Experiência Profissional</strong></td>
+                                    <td>Histórico de empregos, cargos, responsabilidades</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Formação Acadêmica</strong></td>
+                                    <td>Cursos, universidades, anos de conclusão</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cursos e Certificações</strong></td>
+                                    <td>Cursos complementares, certificados</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Idiomas</strong></td>
+                                    <td>Línguas faladas e níveis de proficiência</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Habilidades</strong></td>
+                                    <td>Hard skills e soft skills</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">✏️</span>Editando seu Perfil</h3>
+                        <ol class="step-list"  style="padding-left: 2rem; margin-bottom: 2rem;">
+                            <li>No dashboard, clique em "Editar Perfil" na barra lateral</li>
+                            <li>Preencha todas as seções disponíveis</li>
+                            <li>Use o botão "Upload de Currículo" para preenchimento automático via IA</li>
+                            <li>Revise todas as informações antes de salvar</li>
+                            <li>Clique em "Salvar Alterações"</li>
+                        </ol>
+
+                        <div class="alert alert-info">
+                            <strong>💡 Dica:</strong> Perfis 100% completos têm 5x mais chances de receber propostas de emprego!
+                        </div>
+                    </div>
+                    <div class="subsection">
+                        <h3><span class="icon">📊</span>Realizando a Análise Comportamental</h3>
+                        <ol class="step-list" style="padding-left: 2rem; margin-bottom: 2rem;">
+                            <li>Na barra lateral, clique em "Ver Análise Comportamental"</li>
+                            <li>Se você já tiver realizado a análise, o resultado aparecerá; caso contrário, será direcionado para fazê-la</li>
+                            <li>Preencha o formulário de análise</li>
+                            <li>Aguarde a IA analisar e gerar o resultado</li>
+                            <li>Confira as suas características comportamentais</li>
+                        </ol>
+
+                        <div class="alert alert-info">
+                            <strong>💡 Dica:</strong> Perfis com análise atualizada regularmente têm até 3x mais chances de serem vistos por recrutadores!
+                        </div>
+                    </div>
+
+
+                    <div class="subsection">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">
+                            <span class="icon">🔍</span> Buscando Vagas
+                        </h3>
+                        <ol class="step-list"  style="padding-left: 2rem; margin-bottom: 2rem;">
+                            <li>Na barra lateral escolha entre as duas opções</li>
+                            <li>Clique em "Feed Geral de Vagas" para listagem de todas as vagas do site</li>
+                            <li>Clique em "Vagas compativeis" para deixar a IA recomendar vagas no seu perfil</li>
+                            <li>Clique em "Ver Detalhes" ou "Candidatar-se"</li>
+                            <li>Revise os requisitos da vaga</li>
+                            <li>Confirme sua candidatura</li>
+                        </ol>
+                        <div style="padding-left: 1rem; margin-bottom: 1rem;">
+                            <h4 style="margin-bottom: 0.75rem; font-size: 1.2rem;">📢 Feed Geral de Vagas</h4>
+                            <ul style="list-style-type: disc; padding-left: 3rem;">
+                                <li style="margin-bottom: 0.5rem;">Visualize todas as vagas disponíveis na plataforma</li>
+                                <li style="margin-bottom: 0.5rem;">Use filtros por localização, área, salário e tipo de contrato</li>
+                                <li style="margin-bottom: 0.5rem;">Salve vagas interessantes para candidatar-se depois</li>
+                            </ul>
+                        </div>
+
+                        <div style="padding-left: 1rem">
+                            <h4 style="margin-bottom: 0.75rem; font-size: 1.2rem;">🤖 Vagas Compatíveis</h4>
+                            <ul style="list-style-type: disc; padding-left: 3rem;">
+                                <li style="margin-bottom: 0.5rem;">Veja vagas que combinam com seu perfil (baseado em IA)</li>
+                                <li style="margin-bottom: 0.5rem;">Percentual de compatibilidade para cada vaga</li>
+                                <li style="margin-bottom: 0.5rem;">Razões detalhadas do match</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">📨</span>Candidaturas</h3>
+                        <ol class="step-list"  style="padding-left: 2rem; margin-bottom: 0rem;">
+                            <li>Encontre uma vaga de interesse</li>
+                            <li>Clique em "Ver Detalhes" ou "Candidatar-se"</li>
+                            <li>Revise os requisitos da vaga</li>
+                            <li>Confirme sua candidatura</li>
+                        </ol>
+
+                      <div style="padding: 1rem">
+                            <h4 style="margin-bottom: 0.75rem; font-size: 1.2rem;">🎯 Acompanhamento de Candidaturas</h4>
+                            <p style="margin-bottom: 0.5rem;">Na seção "Minhas Candidaturas", você pode:</p>
+                            <ul style="list-style-type: disc; padding-left: 3rem;">
+                                <li style="margin-bottom: 0.5rem;">Ver todas as vagas que se candidatou</li>
+                                <li style="margin-bottom: 0.5rem;">Acompanhar o status de cada candidatura</li>
+                                <li style="margin-bottom: 0.5rem;">Receber notificações de mudanças de status</li>
+                                <li style="margin-bottom: 0.5rem;">Ver feedback das empresas (quando disponível)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Empresas -->
+            <section id="empresas" class="section">
+                <div class="section-header">
+                    <h2>🏢 Funcionalidades para Empresas</h2>
+                    <p>Encontre os melhores talentos para sua organização</p>
+                </div>
+
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3><span class="icon">🏛️</span>Perfil da Empresa</h3>
+                        <p>Um perfil completo atrai mais candidatos qualificados e transmite credibilidade.</p>
+
+                        <h4>Seções do Perfil:</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Seção</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Dados Básicos</strong></td>
+                                    <td>Nome, logo, CNPJ, site, telefone</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Localização</strong></td>
+                                    <td>Endereço completo e pontos de referência</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sobre a Empresa</strong></td>
+                                    <td>Missão, visão, valores e história</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cultura Organizacional</strong></td>
+                                    <td>Ambiente de trabalho, benefícios e clima</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Área de Atuação</strong></td>
+                                    <td>Segmento, produtos/serviços oferecidos</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tamanho</strong></td>
+                                    <td>Número de funcionários, faturamento</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">📝</span>Publicando Vagas</h3>
+                        <ol class="step-list" style="padding-left: 2rem; margin-bottom: 2rem;">
+                            <li>No dashboard, clique em "Gerenciar Vagas"</li>
+                            <li>Clique em "Nova Vaga"</li>
+                            <li>Preencha todos os campos obrigatórios</li>
+                            <li>Configure as etapas do processo seletivo</li>
+                            <li>Publique a vaga</li>
+                        </ol>
+
+                        <div style="padding-left: 1rem; margin-bottom: 1rem;">
+                            <h4 style="margin-bottom: 0.75rem; font-size: 1.2rem;">📄 Informações da Vaga</h4>
+                            <ul style="list-style-type: disc; padding-left: 3rem;">
+                                <li style="margin-bottom: 0.5rem;">Título da posição</li>
+                                <li style="margin-bottom: 0.5rem;">Descrição das responsabilidades</li>
+                                <li style="margin-bottom: 0.5rem;">Requisitos obrigatórios e desejáveis</li>
+                                <li style="margin-bottom: 0.5rem;">Faixa salarial</li>
+                                <li style="margin-bottom: 0.5rem;">Tipo de contrato (CLT, PJ, Estágio, etc.)</li>
+                                <li style="margin-bottom: 0.5rem;">Modalidade (Presencial, Remoto, Híbrido)</li>
+                                <li style="margin-bottom: 0.5rem;">Localização (caso não seja 100% remoto)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">⚙️</span>Etapas do Processo Seletivo</h3>
+                        <p>Personalize as etapas conforme a vaga e o perfil desejado.</p>
+
+                        <h4>Etapas Disponíveis:</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Etapa</th>
+                                    <th>Descrição</th>
+                                    <th>Configurações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Triagem Inicial</strong></td>
+                                    <td>Análise automatizada de currículos</td>
+                                    <td>Critérios de eliminação automática</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Questionário</strong></td>
+                                    <td>Perguntas personalizadas</td>
+                                    <td>Perguntas obrigatórias ou opcionais</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Entrevista Online</strong></td>
+                                    <td>Videochamada agendada</td>
+                                    <td>Duração e entrevistadores</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Teste Prático</strong></td>
+                                    <td>Avaliação de habilidades técnicas</td>
+                                    <td>Tipo de teste, prazo e critérios</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Entrevista Final</strong></td>
+                                    <td>Decisão final</td>
+                                    <td>Participantes e critérios de escolha</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">👥</span>Gerenciamento de Candidatos</h3>
+                        <ol class="step-list" style="padding-left: 2rem; margin-bottom: 2rem;">
+                            <li>Visualize os perfis completos dos candidatos</li>
+                            <li>Use filtros para facilitar a triagem</li>
+                            <li>Veja a avaliação de compatibilidade via IA</li>
+                            <li>Adicione anotações e comentários personalizados</li>
+                            <li>Comunique-se via mensagens ou agendamentos</li>
+                            <li>Atualize o status do candidato conforme o progresso</li>
+                        </ol>
+
+                        <div class="alert alert-success">
+                            <strong>✅ Status de Candidatos:</strong> Em Análise → Aprovado para Próxima Etapa → Em Processo → Aprovado → Contratado / Reprovado
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload de Currículo -->
+            <section id="upload-curriculo" class="section">
+                <div class="section-header">
+                    <h2>🤖 Upload de Currículo com IA</h2>
+                    <p>Preenchimento automático do perfil usando inteligência artificial</p>
+                </div>
+
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3><span class="icon">📄</span>Como Funciona</h3>
+                        <p>
+                            Nossa IA avançada analisa seu currículo e extrai automaticamente todas as informações relevantes
+                            para preencher seu perfil na plataforma.
+                        </p>
+
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <h4>🔍 Extração Inteligente</h4>
+                                <p>Identifica automaticamente dados pessoais, experiências, formação e habilidades.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>📝 Múltiplos Formatos</h4>
+                                <p>Suporta arquivos PDF e TXT com até 5MB.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>⚡ Processamento Rápido</h4>
+                                <p>Análise completa em menos de 30 segundos.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">📋</span>Passo a Passo</h3>
+                        <ol class="step-list" style="padding-left: 2rem; margin-bottom: 2rem;">
+                            <li>Acesse "Editar Perfil" no seu dashboard</li>
+                            <li>Localize a seção "Upload de Currículo"</li>
+                            <li>Clique em "Escolher Arquivo" ou arraste seu currículo</li>
+                            <li>Aguarde o processamento (uma barra de progresso será exibida)</li>
+                            <li>Revise as informações extraídas pela IA</li>
+                            <li>Faça ajustes manuais, se necessário</li>
+                            <li>Clique em "Aplicar ao Perfil"</li>
+                            <li>Salve as alterações</li>
+                        </ol>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">ℹ️</span>Informações Extraídas</h3>
+                        <p>A IA é capaz de identificar e extrair automaticamente as seguintes categorias:</p>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Informações Extraídas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Dados Pessoais</strong></td>
+                                    <td>Nome, e-mail, telefone, endereço</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Experiência</strong></td>
+                                    <td>Empresas, cargos, períodos e responsabilidades</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Formação</strong></td>
+                                    <td>Cursos, instituições, anos de conclusão</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Certificações</strong></td>
+                                    <td>Cursos complementares e certificados</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Idiomas</strong></td>
+                                    <td>Línguas faladas e níveis de proficiência</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Habilidades</strong></td>
+                                    <td>Hard skills e soft skills</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">⚠️</span>Limitações e Dicas</h3>
+
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Limitações Técnicas:</strong>
+                            <ul style="margin-top: 0.5rem; padding-left: 2rem;">
+                                <li>Tamanho máximo do arquivo: 5MB</li>
+                                <li>Formatos aceitos: PDF e TXT</li>
+                                <li>Tempo máximo de processamento: 60 segundos</li>
+                            </ul>
+                        </div>
+
+                        <h4 style="margin-top: 1.5rem;">💡 Dicas para Melhores Resultados:</h4>
+                        <ul style="list-style-type: disc; padding-left: 3rem;">
+                            <li>Use currículos bem estruturados e organizados</li>
+                            <li>Evite imagens ou elementos gráficos complexos</li>
+                            <li>Prefira texto limpo e legível</li>
+                            <li>Use formato cronológico para experiências profissionais</li>
+                            <li>Sempre inclua datas nas experiências e formações</li>
+                        </ul>
+
+                        <h4 style="margin-top: 1.5rem;">🔧 Fallback Automático</h4>
+                        <p>
+                            Se a IA não conseguir processar seu currículo corretamente, o sistema tentará extrair os dados
+                            usando métodos alternativos (como expressões regulares), garantindo o máximo aproveitamento possível das informações.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Análise Comportamental -->
+            <section id="analise-comportamental" class="section">
+                <div class="section-header">
+                    <h2>🧠 Análise Comportamental</h2>
+                    <p>Avalie suas soft skills para matches mais precisos</p>
+                </div>
+
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3><span class="icon">🎯</span>O que é a Análise Comportamental</h3>
+                        <p>
+                            A análise comportamental é uma avaliação detalhada das suas soft skills e características pessoais
+                            que influenciam seu desempenho profissional. Por meio de perguntas situacionais, avaliamos aspectos como
+                            liderança, trabalho em equipe, resolução de problemas e adaptabilidade.
+                        </p>
+
+                        <div class="alert alert-info">
+                            <strong>🎯 Objetivo:</strong>
+                            Fornecer às empresas uma visão completa do seu perfil comportamental, aumentando as chances de match
+                            com vagas que se alinham à sua personalidade e estilo de trabalho.
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">📊</span>Dimensões Avaliadas</h3>
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <h4>🤝 Trabalho em Equipe</h4>
+                                <p>Capacidade de colaborar, comunicar e contribuir efetivamente em grupos.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>🧩 Resolução de Problemas</h4>
+                                <p>Habilidade para analisar situações complexas e desenvolver soluções criativas.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>💬 Comunicação</h4>
+                                <p>Capacidade de transmitir ideias de forma clara para diferentes públicos.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>🚀 Iniciativa</h4>
+                                <p>Proatividade para identificar oportunidades e agir sem necessidade de direcionamento.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>🔄 Adaptabilidade</h4>
+                                <p>Flexibilidade para lidar com mudanças e situações imprevistas.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>👑 Liderança / Influência</h4>
+                                <p>Capacidade de motivar, inspirar e influenciar outras pessoas.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>📚 Aprendizado Contínuo</h4>
+                                <p>Dedicação ao desenvolvimento pessoal e profissional constante.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">📝</span>Como Realizar a Análise</h3>
+                        <ol class="step-list" style="padding-left: 2rem;">
+                            <li>Acesse "Análise Comportamental" no menu lateral</li>
+                            <li>Clique em "Refazer Análise" (ou "Fazer Análise" se for a primeira vez)</li>
+                            <li>Leia atentamente cada pergunta situacional</li>
+                            <li>Responda de forma detalhada e honesta</li>
+                            <li>Use exemplos concretos da sua experiência</li>
+                            <li>Selecione suas preferências de ambiente de trabalho</li>
+                            <li>Escolha os valores mais importantes para você</li>
+                            <li>Revise suas respostas</li>
+                            <li>Submeta a análise</li>
+                        </ol>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">💡</span>Dicas para Respostas Eficazes</h3>
+
+                        <h4>✅ Faça:</h4>
+                        <ul style="list-style-type: disc; padding-left: 2rem;">
+                            <li>Use exemplos específicos e reais da sua experiência</li>
+                            <li>Descreva situações com contexto, ação e resultado</li>
+                            <li>Seja honesto sobre seus pontos fortes e áreas de melhoria</li>
+                            <li>Demonstre aprendizado e crescimento</li>
+                            <li>Quantifique resultados sempre que possível</li>
+                        </ul>
+
+                        <h4 style="margin-top: 1.5rem;">❌ Evite:</h4>
+                        <ul style="list-style-type: disc; padding-left: 2rem;">
+                            <li>Respostas genéricas ou muito superficiais</li>
+                            <li>Exemplos inventados ou exagerados</li>
+                            <li>Focar apenas em aspectos técnicos</li>
+                            <li>Culpar outras pessoas por falhas</li>
+                            <li>Respostas que você acredita serem "certas", mas que não refletem sua realidade</li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">📈</span>Interpretando os Resultados</h3>
+                        <p>Após completar a análise, você receberá um relatório contendo:</p>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Resultado</th>
+                                    <th>Descrição</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Perfil Comportamental</strong></td>
+                                    <td>Resumo das suas principais características pessoais</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Pontos Fortes</strong></td>
+                                    <td>Soft skills em que você se destaca</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Áreas de Desenvolvimento</strong></td>
+                                    <td>Competências que podem ser aprimoradas</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tipos de Ambiente</strong></td>
+                                    <td>Ambientes de trabalho mais compatíveis com seu estilo</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Recomendações</strong></td>
+                                    <td>Sugestões para seu desenvolvimento profissional contínuo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notificações -->
+            <section id="notificacoes" class="section">
+                <div class="section-header">
+                    <h2>🔔 Sistema de Notificações</h2>
+                    <p>Mantenha-se sempre atualizado com os eventos mais importantes da plataforma</p>
+                </div>
+
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3><span class="icon">📢</span>Tipos de Notificações</h3>
+                        <p>A plataforma envia notificações automáticas para mantê-lo informado em tempo real.</p>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Para Candidatos</th>
+                                    <th>Para Empresas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Novas Oportunidades</strong></td>
+                                    <td>Vagas compatíveis com seu perfil</td>
+                                    <td>Novos candidatos compatíveis</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status de Candidaturas</strong></td>
+                                    <td>Mudanças no processo seletivo</td>
+                                    <td>Novas candidaturas recebidas</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mensagens</strong></td>
+                                    <td>Comunicações das empresas</td>
+                                    <td>Comunicações dos candidatos</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sistema</strong></td>
+                                    <td>Atualizações e avisos da plataforma</td>
+                                    <td>Atualizações e avisos da plataforma</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">⚙️</span>Configurando Notificações</h3>
+                        <p>Você pode personalizar totalmente o que e como deseja ser notificado.</p>
+
+                        <ol class="step-list" style="padding-left: 2rem; margin-bottom: 2rem;">
+                            <li>Clique no ícone de notificações (sino) no topo da tela</li>
+                            <li>Selecione a opção "Configurações de Notificação"</li>
+                            <li>Marque os tipos de eventos que deseja acompanhar</li>
+                            <li>Escolha a frequência: imediata, diária ou semanal</li>
+                            <li>Escolha os canais de recebimento: plataforma, e-mail ou SMS</li>
+                            <li>Clique em "Salvar Configurações"</li>
+                        </ol>
+
+                        <div class="alert alert-info">
+                            <strong>💡 Dica:</strong> Ativar notificações por e-mail garante que você não perca nenhuma atualização importante, mesmo fora da plataforma.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ -->
+            <section id="faq" class="section">
+            <div class="section-header">
+                <h2>❓ Perguntas Frequentes</h2>
+                <p>Respostas para as dúvidas mais comuns</p>
+            </div>
+
+            <div class="section-content">
+                
+                <!-- Para Candidatos -->
+                <div class="subsection">
+                <h3><span class="icon">👤</span> Para Candidatos</h3>
+
+                <div class="faq-item">
+                    <h4>❓ Por que meu perfil não está aparecendo para as empresas?</h4>
+                    <p><strong>R:</strong> Verifique se seu perfil está 100% completo, especialmente as seções críticas (dados pessoais, experiência e habilidades). Perfis incompletos têm menos visibilidade.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Como melhorar minha compatibilidade com as vagas?</h4>
+                    <p><strong>R:</strong> Complete a análise comportamental, atualize suas habilidades, adicione certificações recentes e mantenha seu perfil sempre atualizado.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Por que não recebo retorno das empresas?</h4>
+                    <p><strong>R:</strong> O tempo de resposta varia. Algumas empresas têm processos mais longos. Continue se candidatando e melhorando seu perfil.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Posso me candidatar a vagas com baixa compatibilidade?</h4>
+                    <p><strong>R:</strong> Sim, o sistema de match é uma sugestão. Se você acredita que tem o perfil para a vaga, pode se candidatar normalmente.</p>
+                </div>
+                </div>
+
+                <!-- Para Empresas -->
+                <div class="subsection">
+                <h3><span class="icon">🏢</span> Para Empresas</h3>
+
+                <div class="faq-item">
+                    <h4>❓ Como atrair mais candidatos para minhas vagas?</h4>
+                    <p><strong>R:</strong> Complete o perfil da empresa, escreva descrições atrativas das vagas, ofereça salários competitivos e seja específico sobre os requisitos.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ O algoritmo de match está funcionando corretamente?</h4>
+                    <p><strong>R:</strong> O algoritmo aprende com suas ações. Marque candidatos como "interessante" ou "não compatível" para melhorar as sugestões futuras.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Como configurar etapas personalizadas no processo seletivo?</h4>
+                    <p><strong>R:</strong> Na criação da vaga, acesse "Processo Seletivo" e adicione/remova/reorganize as etapas conforme sua necessidade.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Posso exportar dados dos candidatos?</h4>
+                    <p><strong>R:</strong> Sim, dados dos candidatos que se candidataram às suas vagas podem ser exportados em formato CSV através do painel de gerenciamento.</p>
+                </div>
+                </div>
+
+                <!-- Questões Técnicas -->
+                <div class="subsection">
+                <h3><span class="icon">💻</span> Questões Técnicas</h3>
+
+                <div class="faq-item">
+                    <h4>❓ A plataforma funciona em dispositivos móveis?</h4>
+                    <p><strong>R:</strong> Sim, a plataforma é totalmente responsiva e funciona em smartphones, tablets e desktops.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Meus dados estão seguros?</h4>
+                    <p><strong>R:</strong> Sim, utilizamos criptografia de ponta e seguimos a LGPD. Seus dados nunca são compartilhados sem autorização.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Como recuperar minha senha?</h4>
+                    <p><strong>R:</strong> Na tela de login, clique em "Esqueci minha senha" e siga as instruções enviadas por e-mail.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>❓ Posso excluir minha conta?</h4>
+                    <p><strong>R:</strong> Sim, entre em contato com o suporte através do e-mail <a href="mailto:contato@matchjobs.com.br">contato@matchjobs.com.br</a> para solicitar a exclusão.</p>
+                </div>
+                </div>
+                
+            </div>
+            </section>
+
+            <!-- Suporte -->
+            <section id="suporte" class="section">
+                <div class="section-header">
+                    <h2>🆘 Suporte e Contato</h2>
+                    <p>Estamos aqui para ajudar você</p>
+                </div>
+
+                <div class="section-content">
+                    <div class="subsection">
+                        <h3><span class="icon">📞</span>Canais de Atendimento</h3>
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <h4>✉️ E-mail</h4>
+                                <p><strong>contato@matchjobs.com.br</strong><br>
+                                Resposta em até 24 horas</p>
+                            </div>
+                            <div class="feature-card">
+                                <h4>📱 WhatsApp</h4>
+                                <p><strong>(11) 99999-9999</strong><br>
+                                Segunda a Sexta, 9h às 18h</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">🆘</span>Central de Ajuda</h3>
+                        <p>Antes de entrar em contato, consulte nossa central de ajuda para respostas rápidas:</p>
+                        <ul style="list-style-type: disc; padding-left: 3rem;">
+                            <li><strong>Base de Conhecimento:</strong> Artigos detalhados sobre funcionalidades</li>
+                            <li><strong>Tutoriais em Vídeo:</strong> Passo a passo visual para facilitar o uso</li>
+                            <li><strong>FAQ Expandido:</strong> Perguntas frequentes e suas respostas</li>
+                            <li><strong>Status do Sistema:</strong> Verifique manutenções e atualizações</li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <h3><span class="icon">🐛</span>Reportando Problemas</h3>
+                        <p style="padding-left: 0rem; margin-bottom: 1rem;">Para agilizar o suporte, ao reportar um problema inclua as seguintes informações:</p>
+                        <ul style="list-style-type: disc; padding-left: 3rem;">
+                            <li>Descrição detalhada do problema</li>
+                            <li>Passos para reproduzir o erro</li>
+                            <li>Navegador e versão utilizados</li>
+                            <li>Screenshot do erro (se aplicável)</li>
+                            <li>Horário aproximado da ocorrência</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ações -->
+            <div class="section">
+                <div class="section-content" style="text-align: center;">
+                    <h2>🚀 Pronto para Começar?</h2>
+                    <p style="margin-bottom: 2rem;">Agora que você conhece todas as funcionalidades, é hora de aproveitar ao máximo a plataforma MatchJobs!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 MatchJobs. Todos os direitos reservados.</p>
+            <p>Descomplicando a sua vida.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Destaque da seção ativa na navegação
+        function updateActiveSection() {
+            const sections = document.querySelectorAll('.section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.style.color = '';
+                if (link.getAttribute('href') === '#' + current) {
+                    link.style.color = '#3b82f6';
+                    link.style.fontWeight = 'bold';
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveSection);
+        window.addEventListener('load', updateActiveSection);
+
+        // Alerta de boas-vindas
+        setTimeout(() => {
+            if (window.location.hash === '') {
+                alert('👋 Bem-vindo ao Manual do MatchJobs!\n\nEste manual contém tudo que você precisa saber para aproveitar ao máximo nossa plataforma. Use a navegação superior para ir direto ao tópico de interesse.');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
+
