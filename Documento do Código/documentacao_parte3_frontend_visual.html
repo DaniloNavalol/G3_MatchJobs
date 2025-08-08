@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc Oficial (Parte 3/4) - Frontend HTML e CSS</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
+        .container { display: flex; }
+        .sidebar { width: 320px; background: #2c3e50; color: #ecf0f1; position: fixed; height: 100%; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .sidebar h2 { font-size: 1.5em; margin-bottom: 10px; color: #fff; text-align: center; }
+        .sidebar h3 { font-size: 1.1em; text-align: center; color: #16a085; margin-top:0; margin-bottom: 20px;}
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar ul li a { color: #bdc3c7; text-decoration: none; display: block; padding: 10px 15px; border-radius: 4px; transition: all 0.2s ease-in-out; }
+        .sidebar ul li a:hover, .sidebar ul li a.active { background: #34495e; color: #fff; }
+        .sidebar .sub-menu { padding-left: 20px; }
+        .main-content { margin-left: 320px; padding: 20px 40px; width: calc(100% - 320px); }
+        h1, h2, h3 { color: #2980b9; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-top: 40px; }
+        h1 { font-size: 2.5em; }
+        h2 { font-size: 2em; }
+        h3 { font-size: 1.6em; color: #16a085; }
+        h4 { font-size: 1.3em; color: #8e44ad; border-bottom: 1px solid #e9ecef; }
+        pre { background: #212529; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; white-space: pre; word-wrap: normal; font-size: 0.9em; }
+        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+        .file-path { font-style: italic; color: #7f8c8d; margin-bottom: 15px; font-weight: bold; background: #ecf0f1; padding: 5px; border-left: 5px solid #16a085; }
+        p { text-align: justify; }
+        .code-block { margin-bottom: 30px; }
+        .comment { color: #95a5a6; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <h2>G3_MatchJobs</h2>
+            <h3>Documentação Oficial</h3>
+            <ul>
+                <li><a href="#">Parte 1: Base do Backend</a></li>
+                <li><a href="#">Parte 2: Services e Controllers</a></li>
+                <li><a href="#" class="active"><b>Parte 3: Frontend (HTML e CSS)</b></a>
+                     <ul class="sub-menu">
+                        <li><a href="#html-pages">Páginas HTML</a></li>
+                        <li><a href="#css-styles">Estilos CSS</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Parte 4: Frontend (JavaScript)</a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header>
+                <h1>Parte 3: Frontend (HTML e CSS)</h1>
+                <p>Esta seção documenta a estrutura visual e o design da aplicação, cobrindo todos os arquivos HTML que definem o esqueleto das páginas e os arquivos CSS que aplicam os estilos.</p>
+            </header>
+
+            <section id="html-pages">
+                <h2>1. Páginas HTML</h2>
+                <p>Arquivos que definem a estrutura e o conteúdo de cada página do site.</p>
+
+                <div class="code-block">
+                    <h4>index.html</h4>
+                    <div class="file-path">/Codigo/site/index.html</div>
+                    <pre><code>
+&lt;!DOCTYPE html&gt; <span class="comment">&lt;-- Define o tipo de documento como HTML5 --&gt;</span>
+&lt;html lang="pt-br"&gt; <span class="comment">&lt;-- Inicia o documento HTML, definindo o idioma como português do Brasil --&gt;</span>
+&lt;head&gt; <span class="comment">&lt;-- Seção de metadados do documento --&gt;</span>
+    &lt;meta charset="UTF-8"&gt; <span class="comment">&lt;-- Define o conjunto de caracteres como UTF-8 para suportar acentuação --&gt;</span>
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt; <span class="comment">&lt;-- Configura a viewport para um design responsivo, adaptando a largura ao dispositivo --&gt;</span>
+    &lt;link rel="stylesheet" href="css/style-index.css"&gt; <span class="comment">&lt;-- Vincula a folha de estilos CSS externa para esta página --&gt;</span>
+    &lt;title&gt;MatchJobs&lt;/title&gt; <span class="comment">&lt;-- Define o título que aparece na aba do navegador --&gt;</span>
+&lt;/head&gt; <span class="comment">&lt;-- Fim da seção de metadados --&gt;</span>
+&lt;body&gt; <span class="comment">&lt;-- Início do corpo do documento, conteúdo visível da página --&gt;</span>
+    &lt;header&gt; <span class="comment">&lt;-- Define o cabeçalho da página --&gt;</span>
+        &lt;h1&gt;MatchJobs&lt;/h1&gt; <span class="comment">&lt;-- Título principal da página, geralmente o nome do site --&gt;</span>
+        &lt;nav&gt; <span class="comment">&lt;-- Define uma seção de navegação --&gt;</span>
+            &lt;a href="pages/login.html"&gt;&lt;button&gt;Login&lt;/button&gt;&lt;/a&gt; <span class="comment">&lt;-- Um link para a página de login, estilizado como um botão --&gt;</span>
+            &lt;a href="pages/cadastro.html"&gt;&lt;button&gt;Cadastro&lt;/button&gt;&lt;/a&gt; <span class="comment">&lt;-- Um link para a página de cadastro, estilizado como um botão --&gt;</span>
+        &lt;/nav&gt; <span class="comment">&lt;-- Fim da seção de navegação --&gt;</span>
+    &lt;/header&gt; <span class="comment">&lt;-- Fim do cabeçalho --&gt;</span>
+    &lt;main&gt; <span class="comment">&lt;-- Define o conteúdo principal da página --&gt;</span>
+        &lt;section&gt; <span class="comment">&lt;-- Define uma seção dentro do conteúdo principal --&gt;</span>
+            &lt;div class="texto"&gt; <span class="comment">&lt;-- Um container para o texto de chamada --&gt;</span>
+                &lt;h2&gt;Encontre o emprego dos seus sonhos!&lt;/h2&gt; <span class="comment">&lt;-- Subtítulo principal da seção --&gt;</span>
+                &lt;h3&gt;A plataforma que conecta você às melhores oportunidades.&lt;/h3&gt; <span class="comment">&lt;-- Texto de apoio --&gt;</span>
+            &lt;/div&gt; <span class="comment">&lt;-- Fim do container de texto --&gt;</span>
+            &lt;div class="imagem"&gt; <span class="comment">&lt;-- Um container para a imagem de destaque --&gt;</span>
+                &lt;img src="img/img1.png" alt="Imagem Ilustrativa"&gt; <span class="comment">&lt;-- Imagem principal, com texto alternativo para acessibilidade --&gt;</span>
+            &lt;/div&gt; <span class="comment">&lt;-- Fim do container de imagem --&gt;</span>
+        &lt;/section&gt; <span class="comment">&lt;-- Fim da seção --&gt;</span>
+    &lt;/main&gt; <span class="comment">&lt;-- Fim do conteúdo principal --&gt;</span>
+&lt;/body&gt; <span class="comment">&lt;-- Fim do corpo do documento --&gt;</span>
+&lt;/html&gt; <span class="comment">&lt;-- Fim do documento HTML --&gt;</span>
+                    </code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>login.html</h4>
+                    <div class="file-path">/Codigo/site/pages/login.html</div>
+                    <pre><code>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-br"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;link rel="stylesheet" href="../css/style-login.css"&gt; <span class="comment">&lt;-- Vincula a folha de estilos específica para a página de login --&gt;</span>
+    &lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="login-container"&gt; <span class="comment">&lt;-- Container principal para o formulário de login --&gt;</span>
+        &lt;h2&gt;Login&lt;/h2&gt; <span class="comment">&lt;-- Título do formulário --&gt;</span>
+        &lt;form id="login-form"&gt; <span class="comment">&lt;-- Início do formulário de login. O ID é usado pelo JavaScript para manipulação --&gt;</span>
+            &lt;div class="input-group"&gt; <span class="comment">&lt;-- Agrupa um rótulo e um campo de entrada --&gt;</span>
+                &lt;label for="email"&gt;Email:&lt;/label&gt; <span class="comment">&lt;-- Rótulo para o campo de email --&gt;</span>
+                &lt;input type="email" id="email" name="email" required&gt; <span class="comment">&lt;-- Campo de entrada para o email, do tipo 'email' para validação básica e 'required' para torná-lo obrigatório --&gt;</span>
+            &lt;/div&gt;
+            &lt;div class="input-group"&gt;
+                &lt;label for="senha"&gt;Senha:&lt;/label&gt; <span class="comment">&lt;-- Rótulo para o campo de senha --&gt;</span>
+                &lt;input type="password" id="senha" name="senha" required&gt; <span class="comment">&lt;-- Campo de entrada para a senha, do tipo 'password' para mascarar os caracteres --&gt;</span>
+            &lt;/div&gt;
+            &lt;div class="radio-group"&gt; <span class="comment">&lt;-- Agrupa os botões de rádio para seleção do tipo de usuário --&gt;</span>
+                &lt;input type="radio" id="candidato" name="tipo_usuario" value="candidato" checked&gt; <span class="comment">&lt;-- Botão de rádio para 'Candidato', pré-selecionado (checked) --&gt;</span>
+                &lt;label for="candidato"&gt;Candidato&lt;/label&gt;
+                &lt;input type="radio" id="empresa" name="tipo_usuario" value="empresa"&gt; <span class="comment">&lt;-- Botão de rádio para 'Empresa' --&gt;</span>
+                &lt;label for="empresa"&gt;Empresa&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;button type="submit"&gt;Entrar&lt;/button&gt; <span class="comment">&lt;-- Botão para submeter o formulário --&gt;</span>
+            &lt;p id="error-message" style="color: red; display: none;"&gt;&lt;/p&gt; <span class="comment">&lt;-- Parágrafo para exibir mensagens de erro, inicialmente oculto --&gt;</span>
+        &lt;/form&gt;
+        &lt;p&gt;Não tem uma conta? &lt;a href="cadastro.html"&gt;Cadastre-se&lt;/a&gt;&lt;/p&gt; <span class="comment">&lt;-- Link para a página de cadastro para novos usuários --&gt;</span>
+    &lt;/div&gt;
+    &lt;script src="../js/script-login.js"&gt;&lt;/script&gt; <span class="comment">&lt;-- Vincula o arquivo JavaScript que contém a lógica do formulário de login --&gt;</span>
+&lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>cadastro.html</h4>
+                    <div class="file-path">/Codigo/site/pages/cadastro.html</div>
+                    <p>Estrutura da página de cadastro. Observe que o formulário está incompleto no repositório.</p>
+                    <pre><code>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-br"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;link rel="stylesheet" href="../css/style-cadastro.css"&gt; <span class="comment">&lt;-- Vincula a folha de estilos específica para a página de cadastro --&gt;</span>
+    &lt;title&gt;Cadastro&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="cadastro-container"&gt;
+        &lt;h2&gt;Cadastro&lt;/h2&gt;
+        &lt;form id="cadastro-form"&gt;
+            <span class="comment">&lt;-- O formulário de cadastro não foi implementado no repositório. --&gt;</span>
+            <span class="comment">&lt;-- Aqui entrariam os campos para nome, CPF/CNPJ, email, senha, etc. --&gt;</span>
+        &lt;/form&gt;
+    &lt;/div&gt;
+    &lt;script src="../js/script-cadastro.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>vagas.html</h4>
+                    <div class="file-path">/Codigo/site/pages/vagas.html</div>
+                    <pre><code>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-br"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;link rel="stylesheet" href="../css/style-vagas.css"&gt; <span class="comment">&lt;-- Vincula a folha de estilos específica para a página de vagas --&gt;</span>
+    &lt;title&gt;Vagas&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;h1&gt;Vagas Disponíveis&lt;/h1&gt;
+    &lt;/header&gt;
+    &lt;main&gt;
+        &lt;div class="vagas-container" id="vagas-container"&gt; <span class="comment">&lt;-- Container principal onde as vagas serão inseridas dinamicamente pelo JavaScript --&gt;</span>
+            <span class="comment">&lt;-- O conteúdo aqui será gerado pelo script-vagas.js --&gt;</span>
+        &lt;/div&gt;
+    &lt;/main&gt;
+    &lt;script src="../js/script-vagas.js"&gt;&lt;/script&gt; <span class="comment">&lt;-- Vincula o arquivo JavaScript que busca e exibe as vagas --&gt;</span>
+&lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </div>
+            </section>
+
+            <section id="css-styles">
+                <h2>2. Estilos CSS</h2>
+                <p>Folhas de estilo que definem a aparência de cada página.</p>
+
+                <div class="code-block">
+                    <h4>style-login.css</h4>
+                    <div class="file-path">/Codigo/site/css/style-login.css</div>
+                    <pre><code>
+body { <span class="comment">/* Estiliza o corpo da página */</span>
+    font-family: Arial, sans-serif; <span class="comment">/* Define a família de fontes */</span>
+    background-color: #f4f4f4; <span class="comment">/* Define a cor de fundo */</span>
+    display: flex; <span class="comment">/* Habilita o layout Flexbox */</span>
+    justify-content: center; <span class="comment">/* Centraliza o conteúdo horizontalmente */</span>
+    align-items: center; <span class="comment">/* Centraliza o conteúdo verticalmente */</span>
+    height: 100vh; <span class="comment">/* Define a altura total da tela */</span>
+    margin: 0; <span class="comment">/* Remove a margem padrão */</span>
+}
+
+.login-container { <span class="comment">/* Estiliza o container do formulário */</span>
+    background-color: white; <span class="comment">/* Fundo branco */</span>
+    padding: 2rem; <span class="comment">/* Espaçamento interno */</span>
+    border-radius: 5px; <span class="comment">/* Cantos arredondados */</span>
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); <span class="comment">/* Sombra sutil */</span>
+    width: 300px; <span class="comment">/* Largura fixa */</span>
+}
+
+h2 { <span class="comment">/* Estiliza os títulos de nível 2 */</span>
+    text-align: center; <span class="comment">/* Texto centralizado */</span>
+    margin-bottom: 1.5rem; <span class="comment">/* Margem inferior */</span>
+}
+
+.input-group { <span class="comment">/* Estiliza o grupo de rótulo e campo */</span>
+    margin-bottom: 1rem; <span class="comment">/* Margem inferior para espaçamento */</span>
+}
+
+.input-group label { <span class="comment">/* Estiliza os rótulos */</span>
+    display: block; <span class="comment">/* Faz o rótulo ocupar uma linha inteira */</span>
+    margin-bottom: 5px; <span class="comment">/* Margem inferior pequena */</span>
+}
+
+.input-group input { <span class="comment">/* Estiliza os campos de entrada */</span>
+    width: 100%; <span class="comment">/* Largura total do container pai */</span>
+    padding: 8px; <span class="comment">/* Espaçamento interno */</span>
+    box-sizing: border-box; <span class="comment">/* Faz com que o padding não afete a largura total */</span>
+}
+
+.radio-group { <span class="comment">/* Estiliza o grupo de botões de rádio */</span>
+    margin-bottom: 1rem; <span class="comment">/* Margem inferior */</span>
+}
+
+button { <span class="comment">/* Estiliza o botão de submit */</span>
+    width: 100%; <span class="comment">/* Largura total */</span>
+    padding: 10px; <span class="comment">/* Espaçamento interno */</span>
+    background-color: #5cb85c; <span class="comment">/* Cor de fundo verde */</span>
+    color: white; <span class="comment">/* Cor do texto branca */</span>
+    border: none; <span class="comment">/* Remove a borda padrão */</span>
+    border-radius: 5px; <span class="comment">/* Cantos arredondados */</span>
+    cursor: pointer; <span class="comment">/* Muda o cursor para uma mão ao passar por cima */</span>
+}
+
+button:hover { <span class="comment">/* Estiliza o botão quando o mouse está sobre ele */</span>
+    background-color: #4cae4c; <span class="comment">/* Cor de fundo verde mais escura */</span>
+}
+
+p { <span class="comment">/* Estiliza os parágrafos */</span>
+    text-align: center; <span class="comment">/* Texto centralizado */</span>
+    margin-top: 1rem; <span class="comment">/* Margem superior */</span>
+}
+                    </code></pre>
+                </div>
+                
+                 <div class="code-block">
+                    <h4>style-vagas.css</h4>
+                    <div class="file-path">/Codigo/site/css/style-vagas.css</div>
+                    <p>No repositório, este arquivo está vazio. O estilo da página de vagas não foi implementado.</p>
+                    <pre><code>
+<span class="comment">/* Este arquivo está vazio no repositório do GitHub. */</span>
+<span class="comment">/* Aqui entrariam os estilos para o cabeçalho, o container das vagas, e os cards individuais de cada vaga. */</span>
+                    </code></pre>
+                </div>
+                
+                 <div class="code-block">
+                    <h4>style-index.css e style-cadastro.css</h4>
+                     <p>No repositório, estes arquivos também estão vazios.</p>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+</body>
+</html>
