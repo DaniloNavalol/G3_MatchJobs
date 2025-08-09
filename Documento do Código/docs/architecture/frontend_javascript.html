@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc Oficial (Parte 4/4) - Frontend JavaScript</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
+        .container { display: flex; }
+        .sidebar { width: 320px; background: #2c3e50; color: #ecf0f1; position: fixed; height: 100%; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .sidebar h2 { font-size: 1.5em; margin-bottom: 10px; color: #fff; text-align: center; }
+        .sidebar h3 { font-size: 1.1em; text-align: center; color: #16a085; margin-top:0; margin-bottom: 20px;}
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar ul li a { color: #bdc3c7; text-decoration: none; display: block; padding: 10px 15px; border-radius: 4px; transition: all 0.2s ease-in-out; }
+        .sidebar ul li a:hover, .sidebar ul li a.active { background: #34495e; color: #fff; }
+        .sidebar .sub-menu { padding-left: 20px; }
+        .main-content { margin-left: 320px; padding: 20px 40px; width: calc(100% - 320px); }
+        h1, h2, h3 { color: #2980b9; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-top: 40px; }
+        h1 { font-size: 2.5em; }
+        h2 { font-size: 2em; }
+        h3 { font-size: 1.6em; color: #16a085; }
+        h4 { font-size: 1.3em; color: #8e44ad; border-bottom: 1px solid #e9ecef; }
+        pre { background: #212529; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; white-space: pre; word-wrap: normal; font-size: 0.9em; }
+        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+        .file-path { font-style: italic; color: #7f8c8d; margin-bottom: 15px; font-weight: bold; background: #ecf0f1; padding: 5px; border-left: 5px solid #16a085; }
+        p { text-align: justify; }
+        .code-block { margin-bottom: 30px; }
+        .comment { color: #95a5a6; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <h2>G3_MatchJobs</h2>
+            <h3>Documentação Oficial</h3>
+            <ul>
+                <li><a href="#">Parte 1: Base do Backend</a></li>
+                <li><a href="#">Parte 2: Services e Controllers</a></li>
+                <li><a href="#">Parte 3: Frontend (HTML e CSS)</a></li>
+                <li><a href="#" class="active"><b>Parte 4: Frontend (JavaScript)</b></a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header>
+                <h1>Parte 4: Frontend (JavaScript)</h1>
+                <p>Esta seção final documenta a camada de script do lado do cliente, detalhando os arquivos JavaScript responsáveis pela lógica dos formulários, requisições à API e manipulação dinâmica do conteúdo das páginas.</p>
+            </header>
+
+            <section id="js-scripts">
+                <h2>1. Scripts JavaScript</h2>
+
+                <div class="code-block">
+                    <h4>script-login.js</h4>
+                    <div class="file-path">/Codigo/site/js/script-login.js</div>
+                    <pre><code>
+document.getElementById('login-form').addEventListener('submit', function(event) { <span class="comment">// Seleciona o elemento do formulário pelo seu ID 'login-form' e adiciona um "ouvinte" para o evento 'submit'.</span>
+    event.preventDefault(); <span class="comment">// Previne o comportamento padrão do formulário, que seria recarregar a página ao submeter.</span>
+
+    const email = document.getElementById('email').value; <span class="comment">// Declara uma constante 'email' e armazena nela o valor atual do campo com ID 'email'.</span>
+    const senha = document.getElementById('senha').value; <span class="comment">// Declara uma constante 'senha' e armazena nela o valor atual do campo com ID 'senha'.</span>
+    const tipoUsuario = document.querySelector('input[name="tipo_usuario"]:checked').value; <span class="comment">// Seleciona o botão de rádio com o nome 'tipo_usuario' que está marcado (:checked) e obtém seu valor.</span>
+    const mensagemErro = document.getElementById('error-message'); <span class="comment">// Obtém a referência ao elemento de parágrafo com ID 'error-message' para exibir erros.</span>
+
+    const data = { <span class="comment">// Cria um objeto literal JavaScript para organizar os dados que serão enviados ao backend.</span>
+        email: email, <span class="comment">// Adiciona a propriedade 'email' com o valor da constante 'email'.</span>
+        senha: senha, <span class="comment">// Adiciona a propriedade 'senha' com o valor da constante 'senha'.</span>
+        tipoUsuario: tipoUsuario <span class="comment">// Adiciona a propriedade 'tipoUsuario' com o valor obtido do botão de rádio.</span>
+    }; <span class="comment">// Fim da criação do objeto.</span>
+
+    fetch('http://localhost:8080/login', { <span class="comment">// Inicia uma requisição de rede para a URL da API de login usando a Fetch API.</span>
+        method: 'POST', <span class="comment">// Define o método HTTP da requisição como 'POST', para enviar dados.</span>
+        headers: { <span class="comment">// Define os cabeçalhos da requisição.</span>
+            'Content-Type': 'application/json' <span class="comment">// Informa ao servidor que o corpo da requisição está no formato JSON.</span>
+        }, <span class="comment">// Fim da definição dos cabeçalhos.</span>
+        body: JSON.stringify(data) <span class="comment">// Converte o objeto JavaScript 'data' em uma string no formato JSON para ser enviada no corpo da requisição.</span>
+    }) <span class="comment">// Fim da configuração da requisição fetch.</span>
+    .then(response => { <span class="comment">// O método '.then()' é executado quando o servidor envia uma resposta. 'response' contém os dados da resposta.</span>
+        if (response.ok) { <span class="comment">// A propriedade 'ok' da resposta é 'true' se o status HTTP for bem-sucedido (ex: 200).</span>
+            localStorage.setItem('tipoUsuario', tipoUsuario); <span class="comment">// Se o login for bem-sucedido, armazena o tipo de usuário no armazenamento local (localStorage) do navegador.</span>
+            window.location.href = 'vagas.html'; <span class="comment">// Redireciona o navegador do usuário para a página 'vagas.html'.</span>
+        } else { <span class="comment">// Se a propriedade 'ok' for 'false' (ex: erro 401).</span>
+            mensagemErro.textContent = 'Email ou senha inválidos.'; <span class="comment">// Define o texto do elemento de erro.</span>
+            mensagemErro.style.display = 'block'; <span class="comment">// Muda o estilo do elemento de erro para 'block' para torná-lo visível na página.</span>
+        } <span class="comment">// Fim do bloco if/else.</span>
+    }) <span class="comment">// Fim do primeiro '.then()'.</span>
+    .catch(error => { <span class="comment">// O método '.catch()' é executado se ocorrer um erro na requisição (ex: falha de rede).</span>
+        console.error('Erro no login:', error); <span class="comment">// Exibe o objeto de erro no console do navegador para fins de depuração.</span>
+        mensagemErro.textContent = 'Erro ao tentar fazer login. Tente novamente mais tarde.'; <span class="comment">// Exibe uma mensagem de erro mais genérica para o usuário.</span>
+        mensagemErro.style.display = 'block'; <span class="comment">// Torna a mensagem de erro visível.</span>
+    }); <span class="comment">// Fim do '.catch()'.</span>
+}); <span class="comment">// Fim da função do ouvinte de evento 'submit'.</span>
+                    </code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>script-vagas.js</h4>
+                    <div class="file-path">/Codigo/site/js/script-vagas.js</div>
+                    <pre><code>
+document.addEventListener('DOMContentLoaded', function() { <span class="comment">// Adiciona um ouvinte ao documento que dispara a função quando todo o conteúdo HTML da página foi carregado e analisado.</span>
+    const vagasContainer = document.getElementById('vagas-container'); <span class="comment">// Obtém a referência ao elemento div com o ID 'vagas-container', onde os cards das vagas serão inseridos.</span>
+
+    fetch('http://localhost:8080/vagas') <span class="comment">// Inicia uma requisição de rede do tipo GET (padrão) para a URL da API que lista as vagas.</span>
+        .then(response => { <span class="comment">// O '.then()' é executado quando o servidor responde.</span>
+            if (!response.ok) { <span class="comment">// Verifica se a resposta NÃO foi bem-sucedida (ex: status 404 ou 500).</span>
+                throw new Error('Erro na rede: ' + response.statusText); <span class="comment">// Se a resposta não foi OK, lança um novo erro, que será capturado pelo bloco '.catch()'.</span>
+            } <span class="comment">// Fim do if.</span>
+            return response.json(); <span class="comment">// Se a resposta foi OK, converte o corpo da resposta de JSON para um objeto/array JavaScript.</span>
+        }) <span class="comment">// Fim do primeiro '.then()'.</span>
+        .then(data => { <span class="comment">// Este '.then()' é executado com os dados já convertidos (o array de vagas).</span>
+            vagasContainer.innerHTML = ''; <span class="comment">// Limpa qualquer conteúdo existente dentro do container de vagas (ex: uma mensagem "Carregando...").</span>
+            data.forEach(vaga => { <span class="comment">// Itera sobre cada elemento ('vaga') dentro do array 'data'.</span>
+                const vagaElement = document.createElement('div'); <span class="comment">// Cria um novo elemento HTML 'div' na memória para cada vaga.</span>
+                vagaElement.classList.add('vaga'); <span class="comment">// Adiciona a classe CSS 'vaga' a este novo elemento 'div' para estilização.</span>
+
+                vagaElement.innerHTML = ` <span class="comment">// Define o conteúdo HTML interno do novo 'div' usando uma template string.</span>
+                    &lt;h3&gt;${vaga.nome}&lt;/h3&gt;
+                    &lt;p&gt;&lt;strong&gt;Senioridade:&lt;/strong&gt; ${vaga.senioridade}&lt;/p&gt;
+                    &lt;p&gt;&lt;strong&gt;Salário:&lt;/strong&gt; ${vaga.salario}&lt;/p&gt;
+                    &lt;p&gt;${vaga.descricao}&lt;/p&gt;
+                `; <span class="comment">// Fim da definição do HTML interno. As variáveis como ${vaga.nome} são injetadas na string.</span>
+                
+                vagasContainer.appendChild(vagaElement); <span class="comment">// Adiciona o novo elemento 'div' (o card da vaga) como um filho do 'vagasContainer', tornando-o visível na página.</span>
+            }); <span class="comment">// Fim do forEach.</span>
+        }) <span class="comment">// Fim do segundo '.then()'.</span>
+        .catch(error => { <span class="comment">// Captura erros de rede ou o erro lançado manualmente no primeiro '.then()'.</span>
+            console.error('Erro ao buscar vagas:', error); <span class="comment">// Exibe o erro no console do navegador para depuração.</span>
+            vagasContainer.innerHTML = '&lt;p&gt;Não foi possível carregar as vagas. Tente novamente mais tarde.&lt;/p&gt;'; <span class="comment">// Exibe uma mensagem de erro amigável para o usuário dentro do container.</span>
+        }); <span class="comment">// Fim do '.catch()'.</span>
+}); <span class="comment">// Fim da função do ouvinte de evento 'DOMContentLoaded'.</span>
+                    </code></pre>
+                </div>
+                
+                <div class="code-block">
+                    <h4>script-cadastro.js</h4>
+                    <div class="file-path">/Codigo/site/js/script-cadastro.js</div>
+                    <p>No repositório, este arquivo está vazio. A lógica para o formulário de cadastro não foi implementada.</p>
+                    <pre><code>
+<span class="comment">// Este arquivo está vazio no repositório do GitHub.</span>
+<span class="comment">// Aqui entraria a lógica para capturar os dados do formulário de cadastro,</span>
+<span class="comment">// criar um objeto de dados (usuário ou empresa) e enviá-lo via POST</span>
+<span class="comment">// para o endpoint correspondente no backend (ex: /usuarios ou /empresas).</span>
+                    </code></pre>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+</body>
+</html>

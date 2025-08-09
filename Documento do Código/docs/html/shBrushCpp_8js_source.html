@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MatchJobs Documentation: Código-Fonte de Codigo/Doc/syntax-highlighter/scripts/shBrushCpp.js</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">MatchJobs Documentation
+   </div>
+   <div id="projectbrief">Documentação completa do projeto MatchJobs, incluindo backend e frontend.</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Gerado por Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Localizar','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Localizar');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('shBrushCpp_8js_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">shBrushCpp.js</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="shBrushCpp_8js.html">Ir para a documentação deste ficheiro.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;/**</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; * SyntaxHighlighter</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; * http://alexgorbatchev.com/SyntaxHighlighter</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; *</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; * SyntaxHighlighter is donationware. If you are using it, please donate.</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; * http://alexgorbatchev.com/SyntaxHighlighter/donate.html</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; *</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; * @version</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; * 3.0.83 (July 02 2010)</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; * </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; * @copyright</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; * Copyright (C) 2004-2010 Alex Gorbatchev.</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; *</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; * @license</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; * Dual licensed under the MIT and GPL licenses.</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; */</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;;(function()</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    // CommonJS</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    typeof(require) != &#39;undefined&#39; ? SyntaxHighlighter = require(&#39;shCore&#39;).SyntaxHighlighter : null;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    function Brush()</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        // Copyright 2006 Shin, YoungJin</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        var datatypes = &#39;ATOM BOOL BOOLEAN BYTE CHAR COLORREF DWORD DWORDLONG DWORD_PTR &#39; +</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                        &#39;DWORD32 DWORD64 FLOAT HACCEL HALF_PTR HANDLE HBITMAP HBRUSH &#39; +</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        &#39;HCOLORSPACE HCONV HCONVLIST HCURSOR HDC HDDEDATA HDESK HDROP HDWP &#39; +</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                        &#39;HENHMETAFILE HFILE HFONT HGDIOBJ HGLOBAL HHOOK HICON HINSTANCE HKEY &#39; +</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                        &#39;HKL HLOCAL HMENU HMETAFILE HMODULE HMONITOR HPALETTE HPEN HRESULT &#39; +</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                        &#39;HRGN HRSRC HSZ HWINSTA HWND INT INT_PTR INT32 INT64 LANGID LCID LCTYPE &#39; +</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                        &#39;LGRPID LONG LONGLONG LONG_PTR LONG32 LONG64 LPARAM LPBOOL LPBYTE LPCOLORREF &#39; +</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                        &#39;LPCSTR LPCTSTR LPCVOID LPCWSTR LPDWORD LPHANDLE LPINT LPLONG LPSTR LPTSTR &#39; +</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                        &#39;LPVOID LPWORD LPWSTR LRESULT PBOOL PBOOLEAN PBYTE PCHAR PCSTR PCTSTR PCWSTR &#39; +</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                        &#39;PDWORDLONG PDWORD_PTR PDWORD32 PDWORD64 PFLOAT PHALF_PTR PHANDLE PHKEY PINT &#39; +</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                        &#39;PINT_PTR PINT32 PINT64 PLCID PLONG PLONGLONG PLONG_PTR PLONG32 PLONG64 POINTER_32 &#39; +</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        &#39;POINTER_64 PSHORT PSIZE_T PSSIZE_T PSTR PTBYTE PTCHAR PTSTR PUCHAR PUHALF_PTR &#39; +</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                        &#39;PUINT PUINT_PTR PUINT32 PUINT64 PULONG PULONGLONG PULONG_PTR PULONG32 PULONG64 &#39; +</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                        &#39;PUSHORT PVOID PWCHAR PWORD PWSTR SC_HANDLE SC_LOCK SERVICE_STATUS_HANDLE SHORT &#39; +</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                        &#39;SIZE_T SSIZE_T TBYTE TCHAR UCHAR UHALF_PTR UINT UINT_PTR UINT32 UINT64 ULONG &#39; +</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                        &#39;ULONGLONG ULONG_PTR ULONG32 ULONG64 USHORT USN VOID WCHAR WORD WPARAM WPARAM WPARAM &#39; +</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        &#39;char bool short int __int32 __int64 __int8 __int16 long float double __wchar_t &#39; +</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        &#39;clock_t _complex _dev_t _diskfree_t div_t ldiv_t _exception _EXCEPTION_POINTERS &#39; +</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                        &#39;FILE _finddata_t _finddatai64_t _wfinddata_t _wfinddatai64_t __finddata64_t &#39; +</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                        &#39;__wfinddata64_t _FPIEEE_RECORD fpos_t _HEAPINFO _HFILE lconv intptr_t &#39; +</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                        &#39;jmp_buf mbstate_t _off_t _onexit_t _PNH ptrdiff_t _purecall_handler &#39; +</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        &#39;sig_atomic_t size_t _stat __stat64 _stati64 terminate_function &#39; +</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                        &#39;time_t __time64_t _timeb __timeb64 tm uintptr_t _utimbuf &#39; +</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        &#39;va_list wchar_t wctrans_t wctype_t wint_t signed&#39;;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        var keywords =  &#39;break case catch class const __finally __exception __try &#39; +</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        &#39;const_cast continue private public protected __declspec &#39; +</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                        &#39;default delete deprecated dllexport dllimport do dynamic_cast &#39; +</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                        &#39;else enum explicit extern if for friend goto inline &#39; +</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        &#39;mutable naked namespace new noinline noreturn nothrow &#39; +</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        &#39;register reinterpret_cast return selectany &#39; +</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                        &#39;sizeof static static_cast struct switch template this &#39; +</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                        &#39;thread throw true false try typedef typeid typename union &#39; +</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                        &#39;using uuid virtual void volatile whcar_t while&#39;;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                    </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        var functions = &#39;assert isalnum isalpha iscntrl isdigit isgraph islower isprint&#39; +</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                        &#39;ispunct isspace isupper isxdigit tolower toupper errno localeconv &#39; +</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        &#39;setlocale acos asin atan atan2 ceil cos cosh exp fabs floor fmod &#39; +</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        &#39;frexp ldexp log log10 modf pow sin sinh sqrt tan tanh jmp_buf &#39; +</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        &#39;longjmp setjmp raise signal sig_atomic_t va_arg va_end va_start &#39; +</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                        &#39;clearerr fclose feof ferror fflush fgetc fgetpos fgets fopen &#39; +</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        &#39;fprintf fputc fputs fread freopen fscanf fseek fsetpos ftell &#39; +</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        &#39;fwrite getc getchar gets perror printf putc putchar puts remove &#39; +</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        &#39;rename rewind scanf setbuf setvbuf sprintf sscanf tmpfile tmpnam &#39; +</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        &#39;ungetc vfprintf vprintf vsprintf abort abs atexit atof atoi atol &#39; +</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        &#39;bsearch calloc div exit free getenv labs ldiv malloc mblen mbstowcs &#39; +</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                        &#39;mbtowc qsort rand realloc srand strtod strtol strtoul system &#39; +</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        &#39;wcstombs wctomb memchr memcmp memcpy memmove memset strcat strchr &#39; +</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        &#39;strcmp strcoll strcpy strcspn strerror strlen strncat strncmp &#39; +</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        &#39;strncpy strpbrk strrchr strspn strstr strtok strxfrm asctime &#39; +</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                        &#39;clock ctime difftime gmtime localtime mktime strftime time&#39;;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        this.regexList = [</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            { regex: SyntaxHighlighter.regexLib.singleLineCComments,    css: &#39;comments&#39; },          // one line comments</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            { regex: SyntaxHighlighter.regexLib.multiLineCComments,     css: &#39;comments&#39; },          // multiline comments</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            { regex: SyntaxHighlighter.regexLib.doubleQuotedString,     css: &#39;string&#39; },            // strings</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            { regex: SyntaxHighlighter.regexLib.singleQuotedString,     css: &#39;string&#39; },            // strings</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            { regex: /^ *#.*/gm,                                        css: &#39;preprocessor&#39; },</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            { regex: new RegExp(this.getKeywords(datatypes), &#39;gm&#39;),     css: &#39;color1 bold&#39; },</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            { regex: new RegExp(this.getKeywords(functions), &#39;gm&#39;),     css: &#39;functions bold&#39; },</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            { regex: new RegExp(this.getKeywords(keywords), &#39;gm&#39;),      css: &#39;keyword bold&#39; }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            ];</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    };</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    Brush.prototype = new SyntaxHighlighter.Highlighter();</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    Brush.aliases   = [&#39;cpp&#39;, &#39;c&#39;];</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    SyntaxHighlighter.brushes.Cpp = Brush;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    // CommonJS</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    typeof(exports) != &#39;undefined&#39; ? exports.Brush = Brush : null;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;})();</div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_1d217adaca25555da0c0f7561f9e1c64.html">Codigo</a></li><li class="navelem"><a class="el" href="dir_6c3ab3a2f20c50d93d7ccb23e60ef91c.html">Doc</a></li><li class="navelem"><a class="el" href="dir_baf49f08b1f9af6127866824feba5dec.html">syntax-highlighter</a></li><li class="navelem"><a class="el" href="dir_233e6ef7eac1595e25d1159c00af693d.html">scripts</a></li><li class="navelem"><a class="el" href="shBrushCpp_8js.html">shBrushCpp.js</a></li>
+    <li class="footer">Gerado por <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
