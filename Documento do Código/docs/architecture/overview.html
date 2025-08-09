@@ -1,0 +1,1517 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatchJobs - Documentação do Projeto</title>
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #1e40af;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --bg-color: #f8fafc;
+        --text-color: #334155;
+        --border-color: #e2e8f0;
+        --code-bg: #f1f5f9;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--bg-color);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 3rem 0;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+      }
+
+      .version-badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        display: inline-block;
+      }
+
+      nav {
+        background: white;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: var(--text-color);
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .nav-links a:hover {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      main {
+        padding: 2rem 0;
+      }
+
+      section {
+        background: white;
+        margin: 2rem 0;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: var(--primary-color);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 0.5rem;
+      }
+
+      h3 {
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        margin: 2rem 0 1rem 0;
+      }
+
+      h4 {
+        color: var(--text-color);
+        font-size: 1.25rem;
+        margin: 1.5rem 0 1rem 0;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .feature-card {
+        background: var(--bg-color);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .feature-card h4 {
+        margin-top: 0;
+        color: var(--primary-color);
+      }
+
+      .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+
+      .tech-badge {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+      }
+
+      .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .status-completed {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .status-in-progress {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      code {
+        background: var(--code-bg);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-family: "Monaco", "Consolas", monospace;
+        font-size: 0.875rem;
+      }
+
+      pre {
+        background: var(--code-bg);
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+      }
+
+      .file-tree {
+        background: var(--code-bg);
+        padding: 1rem;
+        border-radius: 8px;
+        font-family: monospace;
+        margin: 1rem 0;
+      }
+
+      .credentials-box {
+        background: #f0f9ff;
+        border: 1px solid #0ea5e9;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      .warning-box {
+        background: #fffbeb;
+        border: 1px solid #f59e0b;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      .success-box {
+        background: #f0fdf4;
+        border: 1px solid #10b981;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      th {
+        background: var(--bg-color);
+        font-weight: 600;
+      }
+
+      .toc {
+        background: var(--bg-color);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+      }
+
+      .toc ul {
+        list-style: none;
+        margin-left: 1rem;
+      }
+
+      .toc a {
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .toc a:hover {
+        text-decoration: underline;
+      }
+
+      footer {
+        background: var(--text-color);
+        color: white;
+        text-align: center;
+        padding: 2rem 0;
+        margin-top: 4rem;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+        }
+        .nav-links {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        .container {
+          padding: 0 15px;
+        }
+        section {
+          padding: 1.5rem;
+        }
+      }
+
+      .file-tree ul {
+  list-style-type: none;
+  padding-left: 1.2em;
+  position: relative;
+}
+
+.file-tree ul::before {
+  content: '';
+  border-left: 1px solid #ccc;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0.5em;
+}
+
+.file-tree li {
+  margin: 0.5em 0;
+  padding-left: 1em;
+  position: relative;
+}
+
+.file-tree li::before {
+  content: '';
+  position: absolute;
+  top: 0.7em;
+  left: 0;
+  width: 0.5em;
+  height: 0;
+  border-top: 1px solid #ccc;
+}
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>🚀 MatchJobs</h1>
+        <p class="subtitle">Plataforma Completa de Recrutamento e Seleção</p>
+        <span class="version-badge">Versão 1.0.0 - Julho 2025</span>
+      </div>
+    </header>
+
+    <nav>
+      <div class="container">
+        <ul class="nav-links">
+          <li><a href="#overview">Visão Geral</a></li>
+          <li><a href="#architecture">Arquitetura</a></li>
+          <li><a href="#features">Funcionalidades</a></li>
+          <li><a href="#structure">Estrutura</a></li>
+          <li><a href="#authentication">Autenticação</a></li>
+          <li><a href="#storage">Storage</a></li>
+          <li><a href="#components">Componentes</a></li>
+          <li><a href="#pages">Páginas</a></li>
+          <li><a href="#usage">Como Usar</a></li>
+          <li><a href="#api">API</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <div class="container">
+        <div class="toc">
+          <h3>📋 Índice</h3>
+          <ul>
+            <li><a href="#overview">1. Visão Geral do Projeto</a></li>
+            <li><a href="#architecture">2. Arquitetura do Sistema</a></li>
+            <li><a href="#features">3. Funcionalidades Implementadas</a></li>
+            <li><a href="#structure">4. Estrutura de Arquivos</a></li>
+            <li><a href="#authentication">5. Sistema de Autenticação</a></li>
+            <li><a href="#storage">6. Sistema de Storage</a></li>
+            <li><a href="#components">7. Componentes Principais</a></li>
+            <li><a href="#pages">8. Páginas e Rotas</a></li>
+            <li><a href="#usage">9. Como Usar o Sistema</a></li>
+            <li><a href="#api">10. APIs e Integrações</a></li>
+          </ul>
+        </div>
+
+        <section id="overview">
+          <h2>🎯 1. Visão Geral do Projeto</h2>
+
+          <p>
+            <strong>MatchJobs</strong> é uma plataforma completa de recrutamento
+            e seleção que conecta candidatos e empresas de forma inteligente. O
+            sistema oferece funcionalidades avançadas para gestão de
+            candidaturas, análise comportamental com IA, e um processo seletivo
+            estruturado.
+          </p>
+
+          <h3>🎨 Tecnologias Utilizadas</h3>
+          <div class="tech-stack">
+            <span class="tech-badge">Next.js 14</span>
+            <span class="tech-badge">React 18</span>
+            <span class="tech-badge">TypeScript</span>
+            <span class="tech-badge">Tailwind CSS</span>
+            <span class="tech-badge">shadcn/ui</span>
+            <span class="tech-badge">Lucide Icons</span>
+            <span class="tech-badge">LocalStorage</span>
+            <span class="tech-badge">Gemini AI</span>
+          </div>
+
+          <h3>🔥 Características Principais</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>🧠 Análise Comportamental com IA</h4>
+              <p>
+                Sistema avançado de análise psicológica usando Gemini AI,
+                incluindo Big Five e Eneagrama.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h4>👤 Perfis Dinâmicos</h4>
+              <p>
+                Perfis completos para candidatos e empresas com dados
+                estruturados e validação.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h4>📋 Gestão de Vagas</h4>
+              <p>
+                Sistema completo de criação, edição e gestão de vagas com etapas
+                personalizáveis.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h4>🔄 Processo Seletivo</h4>
+              <p>
+                Fluxo estruturado de candidaturas com etapas, avaliações e
+                movimentação de candidatos.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="architecture">
+          <h2>🏗️ 2. Arquitetura do Sistema</h2>
+
+          <h3>📊 Arquitetura Geral</h3>
+          <p>
+            O MatchJobs segue uma arquitetura moderna baseada em componentes
+            React com Next.js, utilizando localStorage para persistência de
+            dados e integração com IA para análises comportamentais.
+          </p>
+
+          <h4>🔧 Camadas do Sistema</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Camada</th>
+                <th>Responsabilidade</th>
+                <th>Tecnologias</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Apresentação</strong></td>
+                <td>Interface do usuário, componentes visuais</td>
+                <td>React, Next.js, Tailwind CSS, shadcn/ui</td>
+              </tr>
+              <tr>
+                <td><strong>Lógica de Negócio</strong></td>
+                <td>Regras de negócio, validações, fluxos</td>
+                <td>TypeScript, React Hooks</td>
+              </tr>
+              <tr>
+                <td><strong>Dados</strong></td>
+                <td>Persistência, storage, estado</td>
+                <td>LocalStorage, JSON, Context API</td>
+              </tr>
+              <tr>
+                <td><strong>Integração</strong></td>
+                <td>APIs externas, IA, serviços</td>
+                <td>Gemini AI, Fetch API</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>🎨 Padrões de Design</h3>
+          <ul>
+            <li>
+              <strong>Component-Based Architecture:</strong> Componentes
+              reutilizáveis e modulares
+            </li>
+            <li>
+              <strong>Separation of Concerns:</strong> Separação clara entre
+              lógica e apresentação
+            </li>
+            <li>
+              <strong>Single Responsibility:</strong> Cada função tem uma
+              responsabilidade específica
+            </li>
+            <li>
+              <strong>DRY (Don't Repeat Yourself):</strong> Reutilização de
+              código e componentes
+            </li>
+          </ul>
+        </section>
+
+        <section id="features">
+          <h2>✨ 3. Funcionalidades Implementadas</h2>
+
+          <h3>🔐 Sistema de Autenticação</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>📝 Cadastro</h4>
+              <p>
+                Registro para candidatos (CPF) e empresas (CNPJ) com validação
+                completa
+              </p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>🔑 Login</h4>
+              <p>
+                Autenticação segura com redirecionamento automático para
+                dashboard
+              </p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>🚪 Logout</h4>
+              <p>Encerramento de sessão com limpeza de dados temporários</p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>🔄 Sessão</h4>
+              <p>Gerenciamento automático de sessão e redirecionamento</p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+          </div>
+
+          <h3>👨‍💼 Funcionalidades para Candidatos</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>📊 Dashboard Dinâmico</h4>
+              <p>
+                Estatísticas reais: candidaturas, entrevistas, visualizações,
+                taxa de match
+              </p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>📝 Perfil Completo</h4>
+              <p>
+                Dados pessoais, experiências, educação, cursos, idiomas,
+                habilidades
+              </p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>🧠 Análise Comportamental</h4>
+              <p>Análise psicológica com IA (Big Five, Eneagrama, insights)</p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>📋 Candidaturas</h4>
+              <p>
+                Sistema de aplicação para vagas com acompanhamento de status
+              </p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+          </div>
+
+          <h3>🏢 Funcionalidades para Empresas</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>🏪 Perfil da Empresa</h4>
+              <p>Informações corporativas completas com CNPJ validado</p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>💼 Gestão de Vagas</h4>
+              <p>Criação, edição, ativação e encerramento de vagas</p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>👥 Processo Seletivo</h4>
+              <p>
+                Gestão de candidatos por etapas com movimentação e avaliação
+              </p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+            <div class="feature-card">
+              <h4>📈 Dashboard Empresarial</h4>
+              <p>Métricas de vagas, candidatos e performance de recrutamento</p>
+              <span class="status-badge status-completed">✅ Concluído</span>
+            </div>
+          </div>
+
+          <h3>🔔 Sistema de Notificações</h3>
+          <ul>
+            <li>
+              <strong>Notificações em Tempo Real:</strong> Alertas para
+              candidaturas, entrevistas, atualizações
+            </li>
+            <li>
+              <strong>Contadores Dinâmicos:</strong> Badge com número de
+              notificações não lidas
+            </li>
+            <li>
+              <strong>Tipos Diferentes:</strong> Candidatura, entrevista,
+              visualização de perfil, atualizações
+            </li>
+            <li>
+              <strong>Histórico:</strong> Manutenção de histórico de todas as
+              notificações
+            </li>
+          </ul>
+        </section>
+
+        <section id="structure">
+          <h2>📁 4. Estrutura de Arquivos</h2>
+
+          <div class="file-tree">
+            <ul>
+              <li>Matchjobs/
+                <ul>
+                  <li>app/
+                    <ul>
+                      <li>auth/
+                        <ul>
+                          <li>login/page.tsx</li>
+                          <li>register/page.tsx</li>
+                        </ul>
+                      </li>
+                      <li>dashboard/
+                        <ul>
+                          <li>candidate/
+                            <ul>
+                              <li>page.tsx</li>
+                              <li>profile/edit/</li>
+                              <li>analysis/</li>
+                            </ul>
+                          </li>
+                          <li>company/
+                            <ul>
+                              <li>page.tsx</li>
+                              <li>profile/edit/</li>
+                              <li>jobs/</li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>jobs/</li>
+                      <li>globals.css</li>
+                      <li>layout.tsx</li>
+                      <li>page.tsx</li>
+                    </ul>
+                  </li>
+                  <li>components/
+                    <ul>
+                      <li>ui/</li>
+                      <li>candidate-header.tsx</li>
+                      <li>company-header.tsx</li>
+                      <li>candidate-sidebar.tsx</li>
+                      <li>company-sidebar.tsx</li>
+                    </ul>
+                  </li>
+                  <li>lib/
+                    <ul>
+                      <li>storage.ts</li>
+                      <li>gemini.ts</li>
+                      <li>utils.ts</li>
+                    </ul>
+                  </li>
+                  <li>public/
+                    <ul>
+                      <li>assets/</li>
+                    </ul>
+                  </li>
+                  <li>docs/
+                    <ul>
+                      <li>project-documentation.html</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          
+
+          <h3>📋 Principais Arquivos</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Arquivo</th>
+                <th>Responsabilidade</th>
+                <th>Funcionalidades</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>lib/storage.ts</code></td>
+                <td>Sistema de persistência</td>
+                <td>
+                  Usuários, candidatos, empresas, vagas, candidaturas,
+                  notificações
+                </td>
+              </tr>
+              <tr>
+                <td><code>lib/gemini.ts</code></td>
+                <td>Integração com IA</td>
+                <td>Análise comportamental, Big Five, Eneagrama</td>
+              </tr>
+              <tr>
+                <td><code>components/ui/</code></td>
+                <td>Componentes base</td>
+                <td>Button, Input, Card, Badge, Dialog, etc.</td>
+              </tr>
+              <tr>
+                <td><code>app/layout.tsx</code></td>
+                <td>Layout principal</td>
+                <td>Metadata, providers, estrutura base</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="authentication">
+          <h2>🔐 5. Sistema de Autenticação</h2>
+
+          <h3>🎯 Funcionalidades de Autenticação</h3>
+
+          <h4>📝 Cadastro de Usuários</h4>
+          <p>O sistema suporta dois tipos de usuários:</p>
+          <ul>
+            <li>
+              <strong>Candidatos:</strong> Identificados por CPF com validação
+              completa
+            </li>
+            <li>
+              <strong>Empresas:</strong> Identificadas por CNPJ com validação
+              completa
+            </li>
+          </ul>
+
+          <h4>🔑 Processo de Login</h4>
+          <ol>
+            <li>Usuário insere email e senha</li>
+            <li>Sistema valida credenciais no localStorage</li>
+            <li>Cria sessão do usuário</li>
+            <li>Redireciona para dashboard apropriado</li>
+          </ol>
+
+          <h4>💾 Armazenamento de Sessão</h4>
+          <pre><code>// Estrutura do usuário na sessão
+interface User {
+  id: string;
+  email: string;
+  userType: "candidate" | "company";
+  cpfOrCnpj: string;
+  fullName: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}</code></pre>
+
+          <div class="credentials-box">
+            <h4>🔑 Credenciais de Teste</h4>
+            <p><strong>Candidato:</strong></p>
+            <ul>
+              <li>Email: <code>candidato@teste.com</code></li>
+              <li>Senha: <code>12345678</code></li>
+            </ul>
+            <p><strong>Empresa:</strong></p>
+            <ul>
+              <li>Email: <code>empresa@teste.com</code></li>
+              <li>Senha: <code>12345678</code></li>
+            </ul>
+          </div>
+
+          <h4>🛡️ Proteção de Rotas</h4>
+          <p>O sistema verifica automaticamente a autenticação em:</p>
+          <ul>
+            <li>Headers dos dashboards</li>
+            <li>Páginas protegidas</li>
+            <li>Carregamento de dados pessoais</li>
+            <li>Operações que requerem identificação</li>
+          </ul>
+        </section>
+
+        <section id="storage">
+          <h2>💾 6. Sistema de Storage</h2>
+
+          <h3>🗄️ Estrutura de Dados</h3>
+          <p>
+            O sistema utiliza localStorage para persistência, organizando dados
+            em diferentes collections:
+          </p>
+
+          <h4>👤 Dados de Candidatos</h4>
+          <pre><code>// Estrutura completa do candidato
+interface CandidateData {
+  personal: {
+    cpf: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    address: string;
+    // ... outros campos
+  };
+  experiences: CandidateExperience[];
+  education: CandidateEducation[];
+  courses: CandidateCourse[];
+  languages: CandidateLanguage[];
+  skills: {
+    technical: string[];
+    soft: string[];
+  };
+  behavioralAnalysis?: BehavioralAnalysis;
+}</code></pre>
+
+          <h4>🏢 Dados de Empresas</h4>
+          <pre><code>// Estrutura da empresa
+interface CompanyData {
+  cnpj: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  industry: string;
+  foundedYear: string;
+  employeeCount: string;
+  // ... outros campos
+}</code></pre>
+
+          <h4>💼 Estrutura de Vagas</h4>
+          <pre><code>// Estrutura da vaga
+interface Job {
+  id: string;
+  companyCnpj: string;
+  title: string;
+  area: string;
+  contractType: string;
+  workModel: string;
+  salary: string;
+  description: string;
+  requirements: string;
+  benefits?: string;
+  status: "active" | "closed" | "paused";
+  stages: string[];
+  questions: string[];
+}</code></pre>
+
+          <h4>📋 Sistema de Candidaturas</h4>
+          <pre><code>// Estrutura da candidatura
+interface JobApplication {
+  id: string;
+  jobId: string;
+  candidateCpf: string;
+  companyCnpj: string;
+  status: "applied" | "reviewing" | "approved" | "rejected";
+  currentStage: string;
+  stageHistory: {
+    stage: string;
+    status: "pending" | "approved" | "rejected";
+    date: string;
+    notes?: string;
+  }[];
+  answers: Record&lt;string, string&gt;;
+  appliedAt: string;
+}</code></pre>
+
+          <h3>🔧 Principais Funções do Storage</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Categoria</th>
+                <th>Função</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="3"><strong>Usuários</strong></td>
+                <td><code>createUser()</code></td>
+                <td>Criar novo usuário (candidato/empresa)</td>
+              </tr>
+              <tr>
+                <td><code>authenticateUser()</code></td>
+                <td>Autenticar usuário por email/senha</td>
+              </tr>
+              <tr>
+                <td><code>getCurrentUser()</code></td>
+                <td>Obter usuário da sessão atual</td>
+              </tr>
+              <tr>
+                <td rowspan="3"><strong>Candidatos</strong></td>
+                <td><code>saveCandidateData()</code></td>
+                <td>Salvar dados completos do candidato</td>
+              </tr>
+              <tr>
+                <td><code>getCandidateStatistics()</code></td>
+                <td>Calcular estatísticas do candidato</td>
+              </tr>
+              <tr>
+                <td><code>getRecentApplications()</code></td>
+                <td>Obter candidaturas recentes</td>
+              </tr>
+              <tr>
+                <td rowspan="3"><strong>Vagas</strong></td>
+                <td><code>createJob()</code></td>
+                <td>Criar nova vaga</td>
+              </tr>
+              <tr>
+                <td><code>getJobsByCompany()</code></td>
+                <td>Obter vagas de uma empresa</td>
+              </tr>
+              <tr>
+                <td><code>updateJobStatus()</code></td>
+                <td>Atualizar status da vaga</td>
+              </tr>
+              <tr>
+                <td rowspan="3"><strong>Candidaturas</strong></td>
+                <td><code>createJobApplication()</code></td>
+                <td>Criar candidatura para vaga</td>
+              </tr>
+              <tr>
+                <td><code>updateApplicationStage()</code></td>
+                <td>Mover candidato entre etapas</td>
+              </tr>
+              <tr>
+                <td><code>getApplicationsByJobStage()</code></td>
+                <td>Obter candidatos por etapa</td>
+              </tr>
+              <tr>
+                <td rowspan="3"><strong>Notificações</strong></td>
+                <td><code>createNotification()</code></td>
+                <td>Criar nova notificação</td>
+              </tr>
+              <tr>
+                <td><code>getNotificationsByUserId()</code></td>
+                <td>Obter notificações do usuário</td>
+              </tr>
+              <tr>
+                <td><code>markNotificationAsRead()</code></td>
+                <td>Marcar notificação como lida</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="components">
+          <h2>🧩 7. Componentes Principais</h2>
+
+          <h3>🎨 Componentes de UI (shadcn/ui)</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>🔘 Button</h4>
+              <p>
+                Botões com variantes (primary, secondary, outline, destructive)
+              </p>
+            </div>
+            <div class="feature-card">
+              <h4>📝 Input</h4>
+              <p>Campos de entrada com validação e estados</p>
+            </div>
+            <div class="feature-card">
+              <h4>🎴 Card</h4>
+              <p>Containers para conteúdo com header e footer</p>
+            </div>
+            <div class="feature-card">
+              <h4>🏷️ Badge</h4>
+              <p>Etiquetas para status e categorias</p>
+            </div>
+            <div class="feature-card">
+              <h4>📋 Tabs</h4>
+              <p>Navegação por abas para organização de conteúdo</p>
+            </div>
+            <div class="feature-card">
+              <h4>📊 Progress</h4>
+              <p>Barras de progresso para habilidades e conclusão</p>
+            </div>
+          </div>
+
+          <h3>🏗️ Componentes de Layout</h3>
+
+          <h4>📱 Headers Dinâmicos</h4>
+          <ul>
+            <li>
+              <strong>CandidateHeader:</strong> Header específico para
+              candidatos com notificações e perfil
+            </li>
+            <li>
+              <strong>CompanyHeader:</strong> Header específico para empresas
+              com dados corporativos
+            </li>
+            <li>
+              <strong>Funcionalidades:</strong> Logout, notificações em tempo
+              real, dados do usuário logado
+            </li>
+          </ul>
+
+          <h4>🗂️ Sidebars</h4>
+          <ul>
+            <li>
+              <strong>CandidateSidebar:</strong> Navegação para funcionalidades
+              do candidato
+            </li>
+            <li>
+              <strong>CompanySidebar:</strong> Navegação para funcionalidades da
+              empresa
+            </li>
+            <li>
+              <strong>Menu Estruturado:</strong> Organização hierárquica com
+              submenus
+            </li>
+          </ul>
+
+          <h3>📄 Componentes de Página</h3>
+
+          <h4>🎯 Dashboard Components</h4>
+          <ul>
+            <li>
+              <strong>StatCard:</strong> Cards de estatísticas com ícones e
+              valores dinâmicos
+            </li>
+            <li>
+              <strong>ApplicationCard:</strong> Cards para candidaturas com
+              status e ações
+            </li>
+            <li>
+              <strong>JobCard:</strong> Cards para vagas com informações
+              completas
+            </li>
+            <li>
+              <strong>ProfileCard:</strong> Cards de perfil com foto e
+              informações principais
+            </li>
+          </ul>
+
+          <h4>📋 Form Components</h4>
+          <ul>
+            <li>
+              <strong>PersonalDataForm:</strong> Formulário de dados pessoais
+            </li>
+            <li>
+              <strong>ExperienceForm:</strong> Formulário de experiências
+              profissionais
+            </li>
+            <li>
+              <strong>BehavioralAnalysisForm:</strong> Formulário de análise
+              comportamental
+            </li>
+            <li>
+              <strong>JobForm:</strong> Formulário de criação/edição de vagas
+            </li>
+          </ul>
+        </section>
+
+        <section id="pages">
+          <h2>📄 8. Páginas e Rotas</h2>
+
+          <h3>🔐 Páginas de Autenticação</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Rota</th>
+                <th>Componente</th>
+                <th>Funcionalidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>/auth/login</code></td>
+                <td>LoginPage</td>
+                <td>Login com email/senha, credenciais de teste</td>
+              </tr>
+              <tr>
+                <td><code>/auth/register</code></td>
+                <td>RegisterPage</td>
+                <td>Cadastro candidato/empresa com CPF/CNPJ</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>👤 Páginas do Candidato</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Rota</th>
+                <th>Componente</th>
+                <th>Funcionalidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>/dashboard/candidate</code></td>
+                <td>CandidateDashboard</td>
+                <td>Dashboard principal com estatísticas e candidaturas</td>
+              </tr>
+              <tr>
+                <td><code>/dashboard/candidate/profile/edit</code></td>
+                <td>ProfileEditPage</td>
+                <td>Edição completa do perfil do candidato</td>
+              </tr>
+              <tr>
+                <td><code>/dashboard/candidate/analysis/edit</code></td>
+                <td>AnalysisEditPage</td>
+                <td>Formulário de análise comportamental com IA</td>
+              </tr>
+              <tr>
+                <td><code>/dashboard/candidate/analysis</code></td>
+                <td>AnalysisPage</td>
+                <td>Visualização dos resultados da análise</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>🏢 Páginas da Empresa</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Rota</th>
+                <th>Componente</th>
+                <th>Funcionalidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>/dashboard/company</code></td>
+                <td>CompanyDashboard</td>
+                <td>Dashboard principal com métricas de vagas</td>
+              </tr>
+              <tr>
+                <td><code>/dashboard/company/profile/edit</code></td>
+                <td>CompanyProfileEdit</td>
+                <td>Edição do perfil da empresa</td>
+              </tr>
+              <tr>
+                <td><code>/dashboard/company/jobs/edit</code></td>
+                <td>JobEditPage</td>
+                <td>Criação e edição de vagas</td>
+              </tr>
+              <tr>
+                <td><code>/dashboard/company/jobs/open</code></td>
+                <td>OpenJobsPage</td>
+                <td>Lista de vagas ativas</td>
+              </tr>
+              <tr>
+                <td><code>/dashboard/company/jobs/closed</code></td>
+                <td>ClosedJobsPage</td>
+                <td>Lista de vagas encerradas</td>
+              </tr>
+              <tr>
+                <td><code>/dashboard/company/jobs/[id]</code></td>
+                <td>JobVisualizerPage</td>
+                <td>Visualização detalhada da vaga com candidatos</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>🌐 Páginas Públicas</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Rota</th>
+                <th>Componente</th>
+                <th>Funcionalidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>/</code></td>
+                <td>HomePage</td>
+                <td>Página inicial pública</td>
+              </tr>
+              <tr>
+                <td><code>/jobs</code></td>
+                <td>JobsPage</td>
+                <td>Lista pública de vagas</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="usage">
+          <h2>🚀 9. Como Usar o Sistema</h2>
+
+          <h3>🎯 Primeiros Passos</h3>
+
+          <div class="success-box">
+            <h4>✅ Instalação e Execução</h4>
+            <ol>
+              <li>Clone o repositório</li>
+              <li>Execute <code>npm install</code></li>
+              <li>Execute <code>npm run dev</code></li>
+              <li>Acesse <code>http://localhost:3000</code></li>
+            </ol>
+          </div>
+
+          <h3>👤 Fluxo do Candidato</h3>
+          <ol>
+            <li>
+              <strong>Cadastro:</strong> Acesse <code>/auth/register</code> e
+              selecione "Candidato"
+            </li>
+            <li><strong>Login:</strong> Faça login com suas credenciais</li>
+            <li>
+              <strong>Perfil:</strong> Complete seu perfil em
+              <code>/dashboard/candidate/profile/edit</code>
+            </li>
+            <li>
+              <strong>Análise:</strong> Faça a análise comportamental em
+              <code>/dashboard/candidate/analysis/edit</code>
+            </li>
+            <li>
+              <strong>Candidaturas:</strong> Aplique para vagas e acompanhe no
+              dashboard
+            </li>
+          </ol>
+
+          <h3>🏢 Fluxo da Empresa</h3>
+          <ol>
+            <li>
+              <strong>Cadastro:</strong> Acesse <code>/auth/register</code> e
+              selecione "Empresa"
+            </li>
+            <li><strong>Login:</strong> Faça login com suas credenciais</li>
+            <li><strong>Perfil:</strong> Complete o perfil da empresa</li>
+            <li>
+              <strong>Vagas:</strong> Crie vagas em
+              <code>/dashboard/company/jobs/edit</code>
+            </li>
+            <li>
+              <strong>Gestão:</strong> Gerencie candidatos e processo seletivo
+            </li>
+          </ol>
+
+          <h3>🧠 Sistema de Análise Comportamental</h3>
+
+          <h4>📊 Big Five Personality</h4>
+          <ul>
+            <li>
+              <strong>Abertura:</strong> Criatividade e interesse por novas
+              experiências
+            </li>
+            <li>
+              <strong>Conscienciosidade:</strong> Organização e responsabilidade
+            </li>
+            <li><strong>Extroversão:</strong> Sociabilidade e energia</li>
+            <li><strong>Amabilidade:</strong> Cooperação e confiança</li>
+            <li><strong>Neuroticismo:</strong> Estabilidade emocional</li>
+          </ul>
+
+          <h4>🎭 Eneagrama (Tipos 1-9)</h4>
+          <p>
+            Sistema de personalidade que identifica 9 tipos diferentes com
+            características específicas, motivações e padrões comportamentais.
+          </p>
+
+          <h4>💡 Insights de IA</h4>
+          <ul>
+            <li>Recomendações de posições ideais</li>
+            <li>Dicas para se destacar</li>
+            <li>Áreas de desenvolvimento</li>
+            <li>Perfil comportamental detalhado</li>
+          </ul>
+
+          <h3>📋 Processo Seletivo</h3>
+
+          <h4>🔄 Etapas Padrão</h4>
+          <ol>
+            <li><strong>Triagem:</strong> Análise inicial da candidatura</li>
+            <li>
+              <strong>Teste Técnico:</strong> Avaliação de habilidades técnicas
+            </li>
+            <li><strong>Entrevista:</strong> Entrevista com RH/gestor</li>
+            <li><strong>Finalistas:</strong> Candidatos pré-selecionados</li>
+          </ol>
+
+          <h4>⚡ Ações Disponíveis</h4>
+          <ul>
+            <li>
+              <strong>Mover Etapa:</strong> Aprovar candidato para próxima etapa
+            </li>
+            <li><strong>Desclassificar:</strong> Rejeitar candidato</li>
+            <li>
+              <strong>Visualizar Perfil:</strong> Ver perfil completo do
+              candidato
+            </li>
+            <li>
+              <strong>Adicionar Notas:</strong> Comentários sobre o candidato
+            </li>
+          </ul>
+        </section>
+
+        <section id="api">
+          <h2>🔌 10. APIs e Integrações</h2>
+
+          <h3>🧠 Integração com Gemini AI</h3>
+
+          <h4>⚙️ Configuração</h4>
+          <pre><code>// lib/gemini.ts
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });</code></pre>
+
+          <h4>📝 Prompt para Análise Comportamental</h4>
+          <p>O sistema utiliza um prompt estruturado que analisa:</p>
+          <ul>
+            <li>Respostas sobre habilidades comportamentais</li>
+            <li>Preferências de ambiente de trabalho</li>
+            <li>Valores e objetivos de carreira</li>
+            <li>Análise avançada de personalidade</li>
+          </ul>
+
+          <h4>📊 Resposta Estruturada</h4>
+          <pre><code>// Estrutura da resposta da IA
+interface AIAnalysisResponse {
+  profile: string;
+  profileSummary: string;
+  enneagramType: {
+    type: number;
+    name: string;
+    description: string;
+  };
+  bigFiveDistribution: {
+    openness: number;
+    conscientiousness: number;
+    extraversion: number;
+    agreeableness: number;
+    neuroticism: number;
+  };
+  behavioralHighlights: {
+    communication: string;
+    decision: string;
+    leadership: string;
+    problemSolving: string;
+    adaptability: string;
+  };
+  suggestions: {
+    recommendedPositions: string[];
+    standoutTips: string[];
+    developmentAreas: string[];
+  };
+}</code></pre>
+
+          <h3>🔮 Integrações Futuras</h3>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>📧 Sistema de Email</h4>
+              <p>Notificações por email para candidatos e empresas</p>
+              <span class="status-badge status-pending">🔄 Planejado</span>
+            </div>
+            <div class="feature-card">
+              <h4>💳 Gateway de Pagamento</h4>
+              <p>Sistema de assinaturas para empresas</p>
+              <span class="status-badge status-pending">🔄 Planejado</span>
+            </div>
+            <div class="feature-card">
+              <h4>📱 App Mobile</h4>
+              <p>Aplicativo móvel para candidatos</p>
+              <span class="status-badge status-pending">🔄 Planejado</span>
+            </div>
+          </div>
+
+          <h3>🌐 APIs Externas Utilizadas</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Serviço</th>
+                <th>Propósito</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Google Gemini AI</strong></td>
+                <td>Análise comportamental e personalidade</td>
+                <td>
+                  <span class="status-badge status-completed">✅ Ativo</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="warning-box">
+            <h4>⚠️ Importante - Configuração de API</h4>
+            <p>Para usar a análise comportamental com IA, é necessário:</p>
+            <ol>
+              <li>Obter uma chave da API do Google Gemini</li>
+              <li>
+                Configurar a variável de ambiente <code>GEMINI_API_KEY</code>
+              </li>
+              <li>
+                Garantir que a API esteja habilitada no Google Cloud Console
+              </li>
+            </ol>
+          </div>
+
+          <h3>📈 Métricas e Analytics</h3>
+          <p>
+            O sistema coleta métricas importantes para análise de performance:
+          </p>
+          <ul>
+            <li>
+              <strong>Candidatos:</strong> Taxa de aplicação, tempo de resposta,
+              sucesso por área
+            </li>
+            <li>
+              <strong>Empresas:</strong> Taxa de conversão, tempo de
+              contratação, qualidade dos candidatos
+            </li>
+            <li>
+              <strong>Sistema:</strong> Uso de funcionalidades, performance de
+              IA, feedback dos usuários
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>🎉 Conclusão</h2>
+
+          <p>
+            O <strong>MatchJobs</strong> é uma plataforma completa e moderna
+            para recrutamento e seleção, oferecendo funcionalidades avançadas
+            tanto para candidatos quanto para empresas. Com integração de IA
+            para análise comportamental, sistema robusto de gestão de
+            candidaturas e interface intuitiva, a plataforma está pronta para
+            revolucionar o processo de contratação.
+          </p>
+
+          <h3>🔮 Próximos Passos</h3>
+          <ul>
+            <li>Implementação de notificações por email</li>
+            <li>Sistema de assinaturas premium</li>
+            <li>Aplicativo móvel</li>
+            <li>Analytics avançado</li>
+            <li>Testes automatizados</li>
+          </ul>
+
+          <div class="success-box">
+            <h4>✨ Sistema Completo e Funcional</h4>
+            <p>
+              Todas as funcionalidades principais estão implementadas e
+              funcionando corretamente. O sistema está pronto para uso e pode
+              ser facilmente expandido com novas funcionalidades.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2024 MatchJobs - Documentação do Projeto</p>
+        <p>Desenvolvido com ❤️ usando Next.js, React e TypeScript</p>
+      </div>
+    </footer>
+
+    <script>
+      // Smooth scrolling para links da navegação
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+
+      // Highlight da seção ativa na navegação
+      window.addEventListener("scroll", () => {
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".nav-links a");
+
+        let current = "";
+        sections.forEach((section) => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          if (scrollY >= sectionTop - 200) {
+            current = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === "#" + current) {
+            link.classList.add("active");
+          }
+        });
+      });
+    </script>
+
+    <style>
+      .nav-links a.active {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      /* Scroll suave */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Animações */
+      .feature-card {
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    </style>
+  </body>
+</html>

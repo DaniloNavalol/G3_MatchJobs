@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc Oficial (Parte 1/4) - Config, Models, Repositories</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
+        .container { display: flex; }
+        .sidebar { width: 320px; background: #2c3e50; color: #ecf0f1; position: fixed; height: 100%; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .sidebar h2 { font-size: 1.5em; margin-bottom: 10px; color: #fff; text-align: center; }
+        .sidebar h3 { font-size: 1.1em; text-align: center; color: #16a085; margin-top:0; margin-bottom: 20px;}
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar ul li a { color: #bdc3c7; text-decoration: none; display: block; padding: 10px 15px; border-radius: 4px; transition: all 0.2s ease-in-out; }
+        .sidebar ul li a:hover, .sidebar ul li a.active { background: #34495e; color: #fff; }
+        .sidebar .sub-menu { padding-left: 20px; }
+        .main-content { margin-left: 320px; padding: 20px 40px; width: calc(100% - 320px); }
+        h1, h2, h3 { color: #2980b9; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-top: 40px; }
+        h1 { font-size: 2.5em; }
+        h2 { font-size: 2em; }
+        h3 { font-size: 1.6em; color: #16a085; }
+        h4 { font-size: 1.3em; color: #8e44ad; border-bottom: 1px solid #e9ecef; }
+        pre { background: #212529; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; white-space: pre; word-wrap: normal; font-size: 0.9em; }
+        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+        .file-path { font-style: italic; color: #7f8c8d; margin-bottom: 15px; font-weight: bold; background: #ecf0f1; padding: 5px; border-left: 5px solid #16a085; }
+        p { text-align: justify; }
+        .code-block { margin-bottom: 30px; }
+        .comment { color: #95a5a6; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <h2>G3_MatchJobs</h2>
+            <h3>Documentação Oficial</h3>
+            <ul>
+                <li><a href="#" class="active"><b>Parte 1: Base do Backend</b></a>
+                    <ul class="sub-menu">
+                        <li><a href="#pom-xml">pom.xml</a></li>
+                        <li><a href="#main-app">Aplicação Principal</a></li>
+                        <li><a href="#models">Models</a></li>
+                        <li><a href="#repositories">Repositories</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Parte 2: Services e Controllers</a></li>
+                <li><a href="#">Parte 3: Frontend (HTML e CSS)</a></li>
+                <li><a href="#">Parte 4: Frontend (JavaScript)</a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header>
+                <h1>Parte 1: Base do Backend</h1>
+                <p>Esta seção contém a documentação da configuração do projeto (`pom.xml`), a classe de inicialização da aplicação, as entidades de dados (`Models`) e as interfaces de acesso ao banco de dados (`Repositories`).</p>
+            </header>
+
+            <section id="pom-xml" class="code-block">
+                <h2>1. pom.xml</h2>
+                <div class="file-path">/Codigo/MatchJobs/pom.xml</div>
+                <p>Arquivo de configuração do Maven que define as dependências e plugins do projeto Spring Boot.</p>
+                <pre><code>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt; <span class="comment">// Declaração padrão de um arquivo XML.</span>
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" <span class="comment">// Início do elemento raiz do projeto Maven.</span>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"&gt; <span class="comment">// Define o schema XML para validação do POM.</span>
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt; <span class="comment">// Especifica a versão do modelo do POM (sempre 4.0.0).</span>
+    &lt;parent&gt; <span class="comment">// Define o projeto pai, herdando configurações do Spring Boot.</span>
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; <span class="comment">// ID do grupo do projeto pai.</span>
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt; <span class="comment">// ID do artefato do projeto pai, que gerencia as versões das dependências.</span>
+        &lt;version&gt;2.7.1&lt;/version&gt; <span class="comment">// Versão do Spring Boot a ser utilizada.</span>
+        &lt;relativePath/&gt; <span class="comment">// Indica que o POM pai deve ser buscado no repositório, não localmente.</span>
+    &lt;/parent&gt; <span class="comment">// Fim da seção do pai.</span>
+    &lt;groupId&gt;com.matchjobs&lt;/groupId&gt; <span class="comment">// Define o ID do grupo para este projeto específico.</span>
+    &lt;artifactId&gt;MatchJobs&lt;/artifactId&gt; <span class="comment">// Define o ID do artefato (nome do projeto).</span>
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt; <span class="comment">// Define a versão atual do projeto (SNAPSHOT indica desenvolvimento).</span>
+    &lt;name&gt;MatchJobs&lt;/name&gt; <span class="comment">// Nome legível do projeto.</span>
+    &lt;description&gt;Projeto MatchJobs&lt;/description&gt; <span class="comment">// Descrição do projeto.</span>
+    &lt;properties&gt; <span class="comment">// Seção para definir propriedades reutilizáveis.</span>
+        &lt;java.version&gt;17&lt;/java.version&gt; <span class="comment">// Define a versão do Java a ser utilizada para compilação.</span>
+    &lt;/properties&gt; <span class="comment">// Fim da seção de propriedades.</span>
+    &lt;dependencies&gt; <span class="comment">// Seção onde todas as dependências do projeto são declaradas.</span>
+        &lt;dependency&gt; <span class="comment">// Início da declaração de uma dependência.</span>
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; <span class="comment">// Grupo da dependência Spring Data JPA.</span>
+            &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt; <span class="comment">// Artefato para persistência de dados com JPA.</span>
+        &lt;/dependency&gt; <span class="comment">// Fim da dependência.</span>
+        &lt;dependency&gt; <span class="comment">// Início da declaração de uma dependência.</span>
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; <span class="comment">// Grupo da dependência Spring Web.</span>
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; <span class="comment">// Artefato para criar aplicações web e APIs REST.</span>
+        &lt;/dependency&gt; <span class="comment">// Fim da dependência.</span>
+
+        &lt;dependency&gt; <span class="comment">// Início da declaração de uma dependência.</span>
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; <span class="comment">// Grupo da dependência DevTools.</span>
+            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt; <span class="comment">// Artefato para ferramentas de desenvolvimento (ex: live reload).</span>
+            &lt;scope&gt;runtime&lt;/scope&gt; <span class="comment">// Define o escopo como 'runtime', não é necessário para compilação.</span>
+            &lt;optional&gt;true&lt;/optional&gt; <span class="comment">// Marca a dependência como opcional.</span>
+        &lt;/dependency&gt; <span class="comment">// Fim da dependência.</span>
+        &lt;dependency&gt; <span class="comment">// Início da declaração de uma dependência.</span>
+            &lt;groupId&gt;mysql&lt;/groupId&gt; <span class="comment">// Grupo do conector MySQL.</span>
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt; <span class="comment">// Artefato do driver JDBC para conectar com o banco MySQL.</span>
+            &lt;scope&gt;runtime&lt;/scope&gt; <span class="comment">// Define o escopo como 'runtime', pois é usado durante a execução.</span>
+        &lt;/dependency&gt; <span class="comment">// Fim da dependência.</span>
+        &lt;dependency&gt; <span class="comment">// Início da declaração de uma dependência.</span>
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; <span class="comment">// Grupo da dependência de Testes.</span>
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt; <span class="comment">// Artefato para suporte a testes (JUnit, Mockito, etc.).</span>
+            &lt;scope&gt;test&lt;/scope&gt; <span class="comment">// Define o escopo como 'test', usado apenas na fase de testes.</span>
+        &lt;/dependency&gt; <span class="comment">// Fim da dependência.</span>
+    &lt;/dependencies&gt; <span class="comment">// Fim da seção de dependências.</span>
+
+    &lt;build&gt; <span class="comment">// Seção para configurar o processo de build do projeto.</span>
+        &lt;plugins&gt; <span class="comment">// Seção para declarar plugins do Maven.</span>
+            &lt;plugin&gt; <span class="comment">// Declaração do plugin do Spring Boot.</span>
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; <span class="comment">// Grupo do plugin.</span>
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt; <span class="comment">// Artefato que empacota a aplicação como um JAR executável.</span>
+            &lt;/plugin&gt; <span class="comment">// Fim do plugin.</span>
+        &lt;/plugins&gt; <span class="comment">// Fim da seção de plugins.</span>
+    &lt;/build&gt; <span class="comment">// Fim da seção de build.</span>
+
+&lt;/project&gt; <span class="comment">// Fim do arquivo POM.</span>
+                </code></pre>
+            </section>
+
+            <section id="main-app" class="code-block">
+                <h2>2. Aplicação Principal</h2>
+                <div class="file-path">/Codigo/MatchJobs/src/main/java/com/matchjobs/MatchJobsApplication.java</div>
+                <pre><code>
+package com.matchjobs; <span class="comment">// Define que esta classe pertence ao pacote raiz 'com.matchjobs'.</span>
+
+import org.springframework.boot.SpringApplication; <span class="comment">// Importa a classe principal do Spring para executar a aplicação.</span>
+import org.springframework.boot.autoconfigure.SpringBootApplication; <span class="comment">// Importa a anotação que combina @Configuration, @EnableAutoConfiguration e @ComponentScan.</span>
+
+@SpringBootApplication <span class="comment">// Marca esta classe como o ponto de entrada e configuração de uma aplicação Spring Boot.</span>
+public class MatchJobsApplication { <span class="comment">// Inicia a declaração da classe pública 'MatchJobsApplication'.</span>
+
+    public static void main(String[] args) { <span class="comment">// Método principal padrão do Java, ponto de início da execução.</span>
+        SpringApplication.run(MatchJobsApplication.class, args); <span class="comment">// Inicializa e executa a aplicação Spring, passando a classe de configuração e os argumentos.</span>
+    } <span class="comment">// Fim do método main.</span>
+
+} <span class="comment">// Fim da classe 'MatchJobsApplication'.</span>
+                </code></pre>
+            </section>
+            
+            <section id="models">
+                <h2>3. Models</h2>
+                <p>Classes que representam as entidades de dados do sistema.</p>
+                
+                <div class="code-block">
+                    <h4>Empresa.java</h4>
+                    <div class="file-path">/Codigo/MatchJobs/src/main/java/com/matchjobs/model/Empresa.java</div>
+                    <pre><code>
+package com.matchjobs.model; <span class="comment">// Define que esta classe pertence ao pacote 'com.matchjobs.model'.</span>
+
+import javax.persistence.Entity; <span class="comment">// Importa a anotação 'Entity' para mapeamento objeto-relacional.</span>
+import javax.persistence.GeneratedValue; <span class="comment">// Importa a anotação 'GeneratedValue' para geração automática de chaves primárias.</span>
+import javax.persistence.GenerationType; <span class="comment">// Importa os tipos de estratégias de geração de chaves.</span>
+import javax.persistence.Id; <span class="comment">// Importa a anotação 'Id' para definir a chave primária.</span>
+
+@Entity(name = "empresa") <span class="comment">// Anota a classe como uma entidade JPA e a mapeia para a tabela "empresa".</span>
+public class Empresa { <span class="comment">// Inicia a declaração da classe pública 'Empresa'.</span>
+
+    @Id <span class="comment">// Marca o campo 'id_empresa' como a chave primária da tabela.</span>
+    @GeneratedValue(strategy = GenerationType.IDENTITY) <span class="comment">// Configura a geração do valor da chave primária para ser autoincremental pelo banco.</span>
+    private Long id_empresa; <span class="comment">// Declara o campo para o ID da empresa.</span>
+
+    private String nome; <span class="comment">// Declara o campo para o nome da empresa.</span>
+    private String cnpj; <span class="comment">// Declara o campo para o CNPJ da empresa.</span>
+    private String email; <span class="comment">// Declara o campo para o email da empresa.</span>
+    private String telefone; <span class="comment">// Declara o campo para o telefone da empresa.</span>
+    private String senha; <span class="comment">// Declara o campo para a senha da empresa.</span>
+
+    public Empresa() { <span class="comment">// Declara o construtor padrão (vazio), exigido pelo JPA.</span>
+    } <span class="comment">// Fim do construtor.</span>
+
+    public Long getId_empresa() { <span class="comment">// Método getter para o ID da empresa.</span>
+        return id_empresa; <span class="comment">// Retorna o valor do ID da empresa.</span>
+    } <span class="comment">// Fim do método getId_empresa.</span>
+
+    public void setId_empresa(Long id_empresa) { <span class="comment">// Método setter para o ID da empresa.</span>
+        this.id_empresa = id_empresa; <span class="comment">// Atribui o valor passado ao campo 'id_empresa' da instância.</span>
+    } <span class="comment">// Fim do método setId_empresa.</span>
+
+    public String getNome() { <span class="comment">// Método getter para o nome.</span>
+        return nome; <span class="comment">// Retorna o valor do nome.</span>
+    } <span class="comment">// Fim do método getNome.</span>
+
+    public void setNome(String nome) { <span class="comment">// Método setter para o nome.</span>
+        this.nome = nome; <span class="comment">// Atribui o valor ao campo 'nome'.</span>
+    } <span class="comment">// Fim do método setNome.</span>
+    
+    public String getCnpj() { <span class="comment">// Método getter para o CNPJ.</span>
+        return cnpj; <span class="comment">// Retorna o valor do CNPJ.</span>
+    } <span class="comment">// Fim do método getCnpj.</span>
+
+    public void setCnpj(String cnpj) { <span class="comment">// Método setter para o CNPJ.</span>
+        this.cnpj = cnpj; <span class="comment">// Atribui o valor ao campo 'cnpj'.</span>
+    } <span class="comment">// Fim do método setCnpj.</span>
+
+    public String getEmail() { <span class="comment">// Método getter para o email.</span>
+        return email; <span class="comment">// Retorna o valor do email.</span>
+    } <span class="comment">// Fim do método getEmail.</span>
+
+    public void setEmail(String email) { <span class="comment">// Método setter para o email.</span>
+        this.email = email; <span class="comment">// Atribui o valor ao campo 'email'.</span>
+    } <span class="comment">// Fim do método setEmail.</span>
+
+    public String getTelefone() { <span class="comment">// Método getter para o telefone.</span>
+        return telefone; <span class="comment">// Retorna o valor do telefone.</span>
+    } <span class="comment">// Fim do método getTelefone.</span>
+
+    public void setTelefone(String telefone) { <span class="comment">// Método setter para o telefone.</span>
+        this.telefone = telefone; <span class="comment">// Atribui o valor ao campo 'telefone'.</span>
+    } <span class="comment">// Fim do método setTelefone.</span>
+
+    public String getSenha() { <span class="comment">// Método getter para a senha.</span>
+        return senha; <span class="comment">// Retorna o valor da senha.</span>
+    } <span class="comment">// Fim do método getSenha.</span>
+
+    public void setSenha(String senha) { <span class="comment">// Método setter para a senha.</span>
+        this.senha = senha; <span class="comment">// Atribui o valor ao campo 'senha'.</span>
+    } <span class="comment">// Fim do método setSenha.</span>
+
+} <span class="comment">// Fim da classe 'Empresa'.</span>
+                    </code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>Usuario.java</h4>
+                    <div class="file-path">/Codigo/MatchJobs/src/main/java/com/matchjobs/model/Usuario.java</div>
+                     <pre><code>
+package com.matchjobs.model; <span class="comment">// Define que esta classe pertence ao pacote 'com.matchjobs.model'.</span>
+
+import javax.persistence.Entity; <span class="comment">// Importa a anotação 'Entity'.</span>
+import javax.persistence.GeneratedValue; <span class="comment">// Importa a anotação 'GeneratedValue'.</span>
+import javax.persistence.GenerationType; <span class="comment">// Importa os tipos de estratégias de geração.</span>
+import javax.persistence.Id; <span class="comment">// Importa a anotação 'Id'.</span>
+
+@Entity(name = "usuario") <span class="comment">// Anota a classe como uma entidade JPA e a mapeia para a tabela "usuario".</span>
+public class Usuario { <span class="comment">// Inicia a declaração da classe pública 'Usuario'.</span>
+
+    @Id <span class="comment">// Marca o campo 'id_usuario' como a chave primária.</span>
+    @GeneratedValue(strategy = GenerationType.IDENTITY) <span class="comment">// Configura a geração da chave para ser autoincremental.</span>
+    private Long id_usuario; <span class="comment">// Declara o campo para o ID do usuário.</span>
+
+    private String nome; <span class="comment">// Declara o campo para o nome do usuário.</span>
+    private String cpf; <span class="comment">// Declara o campo para o CPF do usuário.</span>
+    private String data_nasc; <span class="comment">// Declara o campo para a data de nascimento.</span>
+    private String email; <span class="comment">// Declara o campo para o email do usuário.</span>
+    private String telefone; <span class="comment">// Declara o campo para o telefone do usuário.</span>
+    private String senha; <span class="comment">// Declara o campo para a senha do usuário.</span>
+
+    public Usuario() { <span class="comment">// Declara o construtor padrão.</span>
+    } <span class="comment">// Fim do construtor.</span>
+
+    public Long getId_usuario() { <span class="comment">// Getter para o ID do usuário.</span>
+        return id_usuario; <span class="comment">// Retorna o ID.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setId_usuario(Long id_usuario) { <span class="comment">// Setter para o ID do usuário.</span>
+        this.id_usuario = id_usuario; <span class="comment">// Atribui o valor ao campo 'id_usuario'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getNome() { <span class="comment">// Getter para o nome.</span>
+        return nome; <span class="comment">// Retorna o nome.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setNome(String nome) { <span class="comment">// Setter para o nome.</span>
+        this.nome = nome; <span class="comment">// Atribui o valor ao campo 'nome'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getCpf() { <span class="comment">// Getter para o CPF.</span>
+        return cpf; <span class="comment">// Retorna o CPF.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setCpf(String cpf) { <span class="comment">// Setter para o CPF.</span>
+        this.cpf = cpf; <span class="comment">// Atribui o valor ao campo 'cpf'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getData_nasc() { <span class="comment">// Getter para a data de nascimento.</span>
+        return data_nasc; <span class="comment">// Retorna a data de nascimento.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setData_nasc(String data_nasc) { <span class="comment">// Setter para a data de nascimento.</span>
+        this.data_nasc = data_nasc; <span class="comment">// Atribui o valor ao campo 'data_nasc'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getEmail() { <span class="comment">// Getter para o email.</span>
+        return email; <span class="comment">// Retorna o email.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setEmail(String email) { <span class="comment">// Setter para o email.</span>
+        this.email = email; <span class="comment">// Atribui o valor ao campo 'email'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getTelefone() { <span class="comment">// Getter para o telefone.</span>
+        return telefone; <span class="comment">// Retorna o telefone.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setTelefone(String telefone) { <span class="comment">// Setter para o telefone.</span>
+        this.telefone = telefone; <span class="comment">// Atribui o valor ao campo 'telefone'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getSenha() { <span class="comment">// Getter para a senha.</span>
+        return senha; <span class="comment">// Retorna a senha.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setSenha(String senha) { <span class="comment">// Setter para a senha.</span>
+        this.senha = senha; <span class="comment">// Atribui o valor ao campo 'senha'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+} <span class="comment">// Fim da classe 'Usuario'.</span>
+                    </code></pre>
+                </div>
+                
+                <div class="code-block">
+                    <h4>Vagas.java</h4>
+                    <div class="file-path">/Codigo/MatchJobs/src/main/java/com/matchjobs/model/Vagas.java</div>
+                     <pre><code>
+package com.matchjobs.model; <span class="comment">// Define que esta classe pertence ao pacote 'com.matchjobs.model'.</span>
+
+import javax.persistence.Entity; <span class="comment">// Importa a anotação 'Entity'.</span>
+import javax.persistence.GeneratedValue; <span class="comment">// Importa a anotação 'GeneratedValue'.</span>
+import javax.persistence.GenerationType; <span class="comment">// Importa os tipos de estratégias de geração.</span>
+import javax.persistence.Id; <span class="comment">// Importa a anotação 'Id'.</span>
+
+@Entity(name = "vagas") <span class="comment">// Anota a classe como uma entidade JPA e a mapeia para a tabela "vagas".</span>
+public class Vagas { <span class="comment">// Inicia a declaração da classe pública 'Vagas'.</span>
+
+    @Id <span class="comment">// Marca o campo 'id_vaga' como a chave primária.</span>
+    @GeneratedValue(strategy = GenerationType.IDENTITY) <span class="comment">// Configura a geração da chave para ser autoincremental.</span>
+    private Long id_vaga; <span class="comment">// Declara o campo para o ID da vaga.</span>
+
+    private String nome; <span class="comment">// Declara o campo para o nome da vaga.</span>
+    private String senioridade; <span class="comment">// Declara o campo para a senioridade da vaga.</span>
+    private String salario; <span class="comment">// Declara o campo para o salário da vaga.</span>
+    private String descricao; <span class="comment">// Declara o campo para a descrição da vaga.</span>
+    private String id_empresa; <span class="comment">// Declara o campo para o ID da empresa que publicou a vaga.</span>
+
+    public Vagas() { <span class="comment">// Declara o construtor padrão.</span>
+    } <span class="comment">// Fim do construtor.</span>
+
+    public Long getId_vaga() { <span class="comment">// Getter para o ID da vaga.</span>
+        return id_vaga; <span class="comment">// Retorna o ID.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setId_vaga(Long id_vaga) { <span class="comment">// Setter para o ID da vaga.</span>
+        this.id_vaga = id_vaga; <span class="comment">// Atribui o valor ao campo 'id_vaga'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getNome() { <span class="comment">// Getter para o nome.</span>
+        return nome; <span class="comment">// Retorna o nome.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setNome(String nome) { <span class="comment">// Setter para o nome.</span>
+        this.nome = nome; <span class="comment">// Atribui o valor ao campo 'nome'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getSenioridade() { <span class="comment">// Getter para a senioridade.</span>
+        return senioridade; <span class="comment">// Retorna a senioridade.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setSenioridade(String senioridade) { <span class="comment">// Setter para a senioridade.</span>
+        this.senioridade = senioridade; <span class="comment">// Atribui o valor ao campo 'senioridade'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getSalario() { <span class="comment">// Getter para o salário.</span>
+        return salario; <span class="comment">// Retorna o salário.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setSalario(String salario) { <span class="comment">// Setter para o salário.</span>
+        this.salario = salario; <span class="comment">// Atribui o valor ao campo 'salario'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getDescricao() { <span class="comment">// Getter para a descrição.</span>
+        return descricao; <span class="comment">// Retorna a descrição.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setDescricao(String descricao) { <span class="comment">// Setter para a descrição.</span>
+        this.descricao = descricao; <span class="comment">// Atribui o valor ao campo 'descricao'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getId_empresa() { <span class="comment">// Getter para o ID da empresa.</span>
+        return id_empresa; <span class="comment">// Retorna o ID da empresa.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setId_empresa(String id_empresa) { <span class="comment">// Setter para o ID da empresa.</span>
+        this.id_empresa = id_empresa; <span class="comment">// Atribui o valor ao campo 'id_empresa'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+} <span class="comment">// Fim da classe 'Vagas'.</span>
+                    </code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>Login.java (DTO)</h4>
+                    <div class="file-path">/Codigo/MatchJobs/src/main/java/com/matchjobs/model/Login.java</div>
+                     <pre><code>
+package com.matchjobs.model; <span class="comment">// Define que esta classe pertence ao pacote 'com.matchjobs.model'.</span>
+
+public class Login { <span class="comment">// Inicia a declaração da classe pública 'Login' (um DTO).</span>
+
+    private String email; <span class="comment">// Declara o campo para o email.</span>
+    private String senha; <span class="comment">// Declara o campo para a senha.</span>
+    private String tipoUsuario; <span class="comment">// Declara o campo para o tipo de usuário.</span>
+
+    public Login() { <span class="comment">// Declara o construtor padrão.</span>
+    } <span class="comment">// Fim do construtor.</span>
+
+    public String getEmail() { <span class="comment">// Getter para o email.</span>
+        return email; <span class="comment">// Retorna o email.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setEmail(String email) { <span class="comment">// Setter para o email.</span>
+        this.email = email; <span class="comment">// Atribui o valor ao campo 'email'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getSenha() { <span class="comment">// Getter para a senha.</span>
+        return senha; <span class="comment">// Retorna a senha.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setSenha(String senha) { <span class="comment">// Setter para a senha.</span>
+        this.senha = senha; <span class="comment">// Atribui o valor ao campo 'senha'.</span>
+    } <span class="comment">// Fim do setter.</span>
+
+    public String getTipoUsuario() { <span class="comment">// Getter para o tipo de usuário.</span>
+        return tipoUsuario; <span class="comment">// Retorna o tipo de usuário.</span>
+    } <span class="comment">// Fim do getter.</span>
+
+    public void setTipoUsuario(String tipoUsuario) { <span class="comment">// Setter para o tipo de usuário.</span>
+        this.tipoUsuario = tipoUsuario; <span class="comment">// Atribui o valor ao campo 'tipoUsuario'.</span>
+    } <span class="comment">// Fim do setter.</span>
+} <span class="comment">// Fim da classe 'Login'.</span>
+                    </code></pre>
+                </div>
+            </section>
+            
+            <section id="repositories">
+                <h2>4. Repositories</h2>
+                <p>Interfaces que definem os métodos de acesso a dados, utilizando Spring Data JPA.</p>
+
+                <div class="code-block">
+                    <h4>EmpresaRepository.java</h4>
+                    <div class="file-path">/Codigo/MatchJobs/src/main/java/com/matchjobs/repository/EmpresaRepository.java</div>
+                    <pre><code>
+package com.matchjobs.repository; <span class="comment">// Define que esta interface pertence ao pacote 'com.matchjobs.repository'.</span>
+
+import java.util.Optional; <span class="comment">// Importa a classe Optional para lidar com valores que podem ser nulos.</span>
+import org.springframework.data.jpa.repository.JpaRepository; <span class="comment">// Importa a interface JpaRepository do Spring Data.</span>
+import org.springframework.stereotype.Repository; <span class="comment">// Importa a anotação que marca a interface como um componente de repositório do Spring.</span>
+import com.matchjobs.model.Empresa; <span class="comment">// Importa a entidade Empresa.</span>
+
+@Repository <span class="comment">// Anota a interface como um repositório Spring, para ser gerenciada pelo contêiner.</span>
+public interface EmpresaRepository extends JpaRepository&lt;Empresa, Long&gt;{ <span class="comment">// Declara a interface, que herda métodos CRUD de JpaRepository para a entidade Empresa com chave Long.</span>
+
+    Optional&lt;Empresa&gt; findByEmail(String email); <span class="comment">// Define um método customizado para buscar uma Empresa pelo seu email. O Spring Data implementa este método automaticamente.</span>
+} <span class="comment">// Fim da interface 'EmpresaRepository'.</span>
+                    </code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>UsuarioRepository.java</h4>
+                    <div class="file-path">/Codigo/MatchJobs/src/main/java/com/matchjobs/repository/UsuarioRepository.java</div>
+                    <pre><code>
+package com.matchjobs.repository; <span class="comment">// Define que esta interface pertence ao pacote 'com.matchjobs.repository'.</span>
+
+import java.util.Optional; <span class="comment">// Importa a classe Optional.</span>
+import org.springframework.data.jpa.repository.JpaRepository; <span class="comment">// Importa a interface JpaRepository.</span>
+import org.springframework.stereotype.Repository; <span class="comment">// Importa a anotação Repository.</span>
+import com.matchjobs.model.Usuario; <span class="comment">// Importa a entidade Usuario.</span>
+
+@Repository <span class="comment">// Anota a interface como um repositório Spring.</span>
+public interface UsuarioRepository extends JpaRepository&lt;Usuario, Long&gt; { <span class="comment">// Declara a interface, que herda métodos CRUD para a entidade Usuario.</span>
+
+    Optional&lt;Usuario&gt; findByEmail(String email); <span class="comment">// Define um método para buscar um Usuario pelo email.</span>
+} <span class="comment">// Fim da interface 'UsuarioRepository'.</span>
+                    </code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>VagasRepository.java</h4>
+                    <div class="file-path">/Codigo/MatchJobs/src/main/java/com/matchjobs/repository/VagasRepository.java</div>
+                    <pre><code>
+package com.matchjobs.repository; <span class="comment">// Define que esta interface pertence ao pacote 'com.matchjobs.repository'.</span>
+
+import org.springframework.data.jpa.repository.JpaRepository; <span class="comment">// Importa a interface JpaRepository.</span>
+import org.springframework.stereotype.Repository; <span class="comment">// Importa a anotação Repository.</span>
+import com.matchjobs.model.Vagas; <span class="comment">// Importa a entidade Vagas.</span>
+
+@Repository <span class="comment">// Anota a interface como um repositório Spring.</span>
+public interface VagasRepository extends JpaRepository&lt;Vagas, Long&gt; { <span class="comment">// Declara a interface, que herda métodos CRUD para a entidade Vagas. Não há métodos customizados aqui.</span>
+
+} <span class="comment">// Fim da interface 'VagasRepository'.</span>
+                    </code></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
